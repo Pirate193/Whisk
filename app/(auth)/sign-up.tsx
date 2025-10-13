@@ -100,7 +100,7 @@ export default function SignUpScreen() {
     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     keyboardVerticalOffset={60}
     >
-    <ScrollView showsVerticalScrollIndicator={false} >
+    <ScrollView showsVerticalScrollIndicator={false} className='flex-1' >
     
           <View className='flex ' >
             <Image 

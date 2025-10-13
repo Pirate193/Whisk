@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@/providers/themeProvider";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { tokenCache } from '@clerk/clerk-expo/token-cache';
 import { ConvexReactClient } from "convex/react";
@@ -13,15 +14,15 @@ export default function RootLayout() {
   return (
   <ClerkProvider tokenCache={tokenCache} >
     <ConvexProviderWithClerk client={convex}  useAuth={useAuth}>
+      <ThemeProvider>
       <SafeAreaProvider>
            <SafeAreaView className="flex-1" >
           <StatusBar style="dark" />
           <Stack screenOptions={{headerShown:false}} />
       </SafeAreaView>
       </SafeAreaProvider>
+      </ThemeProvider>
     </ConvexProviderWithClerk>
- 
     </ClerkProvider>
-  
 );
 }

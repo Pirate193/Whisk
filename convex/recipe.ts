@@ -1,0 +1,88 @@
+import { v } from "convex/values";
+import { internalMutation, query } from "./_generated/server";
+
+
+
+export const getRecipes = query({
+    args:{
+      limit:v.optional(v.number()),
+    },
+    returns:v.array(v.any()),
+    handler:async(ctx,args)=>{
+      const limit = args.limit ?? 50;
+      const recipes =   await ctx.db.query('recipes').order('desc').take(limit);
+
+      return recipes;
+    }
+})
+
+
+export const getRecipe = query({
+  args:{
+    recipeId:v.id('recipes')
+  },
+  handler:async(ctx,args)=>{
+    const recipe = await ctx.db.get(args.recipeId);
+    return recipe;
+  }
+})
+
+
+
+export const createRecipe = internalMutation({
+    args:{
+        recipe:v.object({
+            
+            externalId: v.optional(v.string()),
+      title: v.string(),
+      description: v.optional(v.string()),
+      imageUrl: v.string(),
+      servings: v.number(),
+      prepTime: v.number(),
+      cookTime: v.number(),
+      totalTime: v.number(),
+      difficulty: v.union(v.literal('easy'), v.literal('medium'), v.literal('hard')),
+      ingredients: v.array(v.object({
+        name: v.string(),
+        amount: v.number(),
+        unit: v.string(),
+        notes: v.optional(v.string())
+      })),
+      instruction: v.array(v.object({
+        stepNumber: v.number(),
+        instruction: v.string(),
+        duration: v.optional(v.number()),
+        imageUrl: v.optional(v.string())
+      })),
+      nutrition: v.object({
+        calories: v.number(),
+        protein: v.number(),
+        carbs: v.number(),
+        fat: v.number(),
+        fiber: v.optional(v.number()),
+        sugar: v.optional(v.number()),
+        sodium: v.optional(v.number()),
+        cholesterol: v.optional(v.number())
+      }),
+      mealType: v.array(v.string()),
+      cuisineType: v.optional(v.string()),
+      dishType: v.array(v.string()),
+      dietaryTags: v.array(v.string()),
+      source: v.union(v.literal('api'), v.literal('ai'), v.literal('user'), v.literal('community')),
+      sourceUrl: v.optional(v.string()),
+      sourceName: v.optional(v.string()),
+      viewCounts: v.number(),
+      favoriteCount: v.number(),
+      cookCount: v.number(),
+      averageRating: v.optional(v.number()),
+      videoUrl: v.optional(v.string()),
+      videoThumbnailUrl: v.optional(v.string()),
+      createdAt: v.number(),
+      updatedAt: v.number()
+        })
+    },
+    handler:async(ctx,args)=>{
+        const recipeId = await ctx.db.insert('recipes',args.recipe);
+        return recipeId;
+    }
+})

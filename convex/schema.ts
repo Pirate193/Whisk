@@ -194,9 +194,8 @@ export default defineSchema({
         //notes
         notes:v.optional(v.string()),
         rating:v.optional(v.number()),
-
         photoUrl:v.optional(v.string()),
-        createdAt:v.number(),
+        
     })
     .index('by_userId_date',['userId','date'])
     .index('by_userId',['userId'])
@@ -231,8 +230,6 @@ export default defineSchema({
         ),
         isActive:v.boolean(),
         completedMeals:v.number(),
-
-        createdAt:v.number(),
         updatedAt:v.number()
     })
      .index('by_userId',['userId'])
@@ -400,7 +397,7 @@ export default defineSchema({
     // Engagement
     helpfulCount: v.number(), // Other users marked as helpful
     
-    createdAt: v.number()
+    
   })
     .index("by_recipeId", ["recipeId"])
     .index("by_userId", ["userId"])
@@ -429,7 +426,7 @@ export default defineSchema({
     // Achievements
     achievementsUnlocked: v.optional(v.array(v.string())),
     
-    createdAt: v.number()
+    
   })
     .index("by_userId_date", ["userId", "date"])
     .index("by_userId", ["userId"]),
@@ -464,8 +461,7 @@ export default defineSchema({
     
     scheduledFor: v.optional(v.number()), // Future notifications
     sentAt: v.optional(v.number()),
-    
-    createdAt: v.number()
+   
   })
     .index("by_userId", ["userId"])
     .index("by_userId_isRead", ["userId", "isRead"])
@@ -489,8 +485,7 @@ export default defineSchema({
     // For rate limiting free users
     dailyUsageCount: v.number(),
     dailyResetAt: v.number(),
-    
-    createdAt: v.number(),
+   
     updatedAt: v.number()
   })
     .index("by_userId_feature", ["userId", "feature"])

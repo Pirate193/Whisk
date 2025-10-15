@@ -1,5 +1,7 @@
 import { v } from "convex/values";
-import { internalMutation, query } from "./_generated/server";
+import { api, internal } from "./_generated/api";
+import { action, internalMutation, query } from "./_generated/server";
+import { transformRecipe } from "./backfill";
 
 
 
@@ -27,7 +29,54 @@ export const getRecipe = query({
   }
 })
 
+export const searchRecipe = query({
+  args:{
+    query:v.string(),
+  },
+  handler:async(ctx,args)=>{
+    const limit = 20
+    const recipe = ctx.db.query('recipes').withSearchIndex('search_title',(q)=>q.search('title',args.query)).take(limit)
+    return recipe;
+  }
+})
 
+// convex/recipe.ts
+export const searching = action({
+  args: { query: v.string() },
+  handler: async (ctx, args) => {
+    // First search database
+    const dbSearch: any = await ctx.runQuery(api.recipe.searchRecipe, { query: args.query });
+
+    if (dbSearch && dbSearch.length > 0) {
+      return dbSearch; // Return multiple results
+    }
+
+    // If not found, fetch from Spoonacular
+    const url = `https://api.spoonacular.com/recipes/complexSearch?query=${args.query}&number=5&addRecipeInformation=true&fillIngredients=true&apiKey=${process.env.SPOONACULAR_API_KEY}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    if (!data.results || data.results.length === 0) {
+      throw new Error("No recipes found");
+    }
+
+    // Transform and save all results
+    const savedRecipes = [];
+    for (const recipe of data.results) {
+      const transformedRecipe = transformRecipe(recipe);
+      const recipeId:any = await ctx.runMutation(internal.recipe.createRecipe, { 
+        recipe: transformedRecipe 
+      });
+      
+      savedRecipes.push({
+        _id: recipeId,
+        ...transformedRecipe
+      });
+    }
+
+    return savedRecipes;
+  }
+});
 
 export const createRecipe = internalMutation({
     args:{

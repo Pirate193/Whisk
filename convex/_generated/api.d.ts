@@ -11,7 +11,10 @@
 import type * as ai from "../ai.js";
 import type * as backfill from "../backfill.js";
 import type * as http from "../http.js";
+import type * as meallogs from "../meallogs.js";
+import type * as mealplan from "../mealplan.js";
 import type * as recipe from "../recipe.js";
+import type * as tools from "../tools.js";
 import type * as users from "../users.js";
 
 import type {
@@ -32,7 +35,10 @@ declare const fullApi: ApiFromModules<{
   ai: typeof ai;
   backfill: typeof backfill;
   http: typeof http;
+  meallogs: typeof meallogs;
+  mealplan: typeof mealplan;
   recipe: typeof recipe;
+  tools: typeof tools;
   users: typeof users;
 }>;
 declare const fullApiWithMounts: typeof fullApi;

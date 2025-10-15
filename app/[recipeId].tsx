@@ -1,11 +1,14 @@
 import Details from '@/components/Details';
+import Ingredients from '@/components/Ingredients';
+import Instructions from '@/components/Instructions';
 import { api } from '@/convex/_generated/api';
 import { Id } from '@/convex/_generated/dataModel';
+import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from 'convex/react';
 import { Image } from 'expo-image';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 
 export default function RecipePage() {
     const {recipeId} = useLocalSearchParams();
@@ -17,8 +20,16 @@ export default function RecipePage() {
     <View className='flex-1 bg-background-light dark:bg-background-dark' >
 
         {/* header */}
-       <View>
-         <Text>{recipe?.title} </Text>
+       <View className='flex-row justify-between px-2  ' >
+        <TouchableOpacity onPress={() => router.back()} >
+            <Ionicons name='chevron-back-outline' size={32}   />
+        </TouchableOpacity>
+        <View>
+             <Text className='text-2xl font-bold dark:text-white'numberOfLines={1} >{recipe?.title} </Text>
+        </View>
+           <TouchableOpacity>
+            <Ionicons name='heart-outline' size={32} />
+           </TouchableOpacity>
         </View> 
         <View>
             <Image
@@ -50,13 +61,36 @@ export default function RecipePage() {
         ) 
         }
         { activeTab === 'Ingredients' && (
-            <Text> Ingredients </Text>
+            <FlatList
+            data={recipe?.ingredients}
+            keyExtractor={(item,index)=>`${item}-${index}`}
+            renderItem={({item,index})=>(
+                <Ingredients
+                index={index+1}
+                name={item.name}
+                amount={item.amount}
+                units={item.unit}
+                notes={item.notes}
+                />
+            )}
+            
+            />
         )
 
         }
         {
             activeTab ==='Instructions' && (
-                <Text> Instructions </Text>
+                <FlatList 
+                data={recipe?.instruction}
+                keyExtractor={(item)=>`${item.stepNumber}`}
+                renderItem={({item})=>(
+                    <Instructions stepNumber={item.stepNumber}
+                    instruction={item.instruction}
+                    duration={item.duration}
+                    imageUrl={item.imageUrl}
+                    />
+                )}
+                />
 
             )
         }

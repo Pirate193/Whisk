@@ -41,7 +41,7 @@ export const backfill= action({
     }
 })
 
-function transformRecipe(recipe:any){
+export function transformRecipe(recipe:any){
     return{
         externalId: recipe.id?.toString(),
         title: recipe.title,
@@ -78,13 +78,13 @@ function transformRecipe(recipe:any){
     };
 }
 
-function mapDifficulty(totalTime:number):'easy'|'medium'|'hard'{
+export function mapDifficulty(totalTime:number):'easy'|'medium'|'hard'{
     if(totalTime<=30)return 'easy';
     if(totalTime<=60)return 'medium';
     return 'hard';
 }
 
-function transformInstructions(steps:any[]){
+export function transformInstructions(steps:any[]){
     return steps.map((step,index)=>({
         stepNumber: step.number || index +1,
         instruction:step.step,
@@ -93,7 +93,7 @@ function transformInstructions(steps:any[]){
     }));
 }
 
-function extractNutrition(nutrition:any){
+export function extractNutrition(nutrition:any){
     if(!nutrition || !nutrition.nutrients){
         return{
             calories: 0,

@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Text, View } from 'react-native';
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import NutritionRings from './NutritionRings';
 interface Props{
     description?:string,
     difficulty?:string,
@@ -17,21 +17,22 @@ interface Props{
 }
 
 export default function Details({description,difficulty,totalTime,servings,nutritions}:Props) {
+    
     const max = 100; 
-  const getFill = (value: number) => Math.min((value / max) * 100, 100);
+    const getFill = (value: number) => Math.min((value / max) * 100, 100);
   return (
     <View>
         {/* header  */}
        <View>
-        <Text>{description}</Text>
+        <Text className='dark:text-white' >{description}</Text>
        </View>
         {/* mid section  */}
        <View className='flex-row gap-2 justify-around mt-2' >
-        <Text>
+        <Text className='dark:text-white' >
          <Ionicons name='time-outline' size={20} />
             {totalTime} min
         </Text>
-        <Text>
+        <Text className='dark:text-white' >
             <Ionicons name='people-outline' size={20} />
             {servings} servings
         </Text>
@@ -46,33 +47,31 @@ export default function Details({description,difficulty,totalTime,servings,nutri
                     }
                   `}
                     >
-                   <Text >{difficulty}</Text>
+                   <Text  >{difficulty}</Text>
          </View>
        </View>
-       {/* render progress chat   */}
-       {nutritions && (
-          <View className='flex flex-row justify-between' >
-            {Object.entries(nutritions).map(([key,value])=>(
-                <AnimatedCircularProgress
-                key={key as keyof typeof nutritions}
-                size={70}
-                width={7}
-                fill={getFill(value)}
-                tintColor='#00ff00'
-                backgroundColor='#3d5875'
-                >
-                    {()=>(
-                        <Text>
-                            {Math.round(value)}
-                            {key === 'calories'?'':'g'}
-                        </Text>
-                    )}
-                </AnimatedCircularProgress>
-                
-            ))}
-        </View>
-       )}
        
+       <View  className="flex-row justify-between" > 
+        <View  className='flex items-center justify-center ml-2' >
+            <Text className='dark:text-white' >
+              <Ionicons name='flame-outline'  />  
+              Kcal : {nutritions?.calories}
+             </Text>
+             <Text className='text-green-400' >
+                Protein:{nutritions?.protein}
+             </Text>
+             <Text className='text-yellow-200' >
+                Carbs:{nutritions?.carbs}
+             </Text>
+             <Text className='text-red-400' >
+                Fat:{nutritions?.fat}
+             </Text>
+        </View >
+            <NutritionRings nutrition={nutritions} />
+       </View>
+
+      
     </View>
+
   )
 }

@@ -1,15 +1,20 @@
+import MealPlan from '@/components/MealPlan'
 import Today from '@/components/Today'
+import { api } from '@/convex/_generated/api'
+import { useAuth } from '@clerk/clerk-expo'
+import { useQuery } from 'convex/react'
 import React, { useState } from 'react'
-import { Text, TouchableOpacity, View } from 'react-native'
-
+import { FlatList, Text, TouchableOpacity, View } from 'react-native'
 const Logs = () => {
   const [activeTab,setActiveTab] = useState<'Today'|'MealPlan'|'Logs'>('Today')
+    const {userId}= useAuth()
+    const MealPlans = useQuery(api.mealplan.getMealplan,{userId:userId as string})
    
   return (
     <View className='flex-1 bg-white dark:bg-black' >
         <View>
-          <Text>Logs </Text>
-          <Text> Track your Meals And Progress </Text>
+          <Text className='text-lg dark:text-white' >Logs </Text>
+          <Text className='dark:text-white' > Track your Meals And Progress </Text>
         </View>
         <View className='flex-row justify-around mt-2'>
          {['Today','MealPlan','Logs'].map((tab)=>(
@@ -29,9 +34,14 @@ const Logs = () => {
             </View>
           )}
          { activeTab === 'MealPlan' &&(
-           <View>
-            <Text>MealPl sedfwdean</Text>
-            </View>
+            <FlatList
+            data={MealPlans}
+            keyExtractor={(item)=>item._id}
+            renderItem={({item})=>(
+              <MealPlan id={item._id} title={item.name} startDate={item.startDate} 
+              endDate={item.endDate} isActive={item.isActive} totalRecipes={item.totalRecipes} completedMeals={item.completedMeals} />
+            )}
+            />
         )}
         {  activeTab === 'Logs' && (
            <Text >Logs</Text>

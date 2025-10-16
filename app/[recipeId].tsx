@@ -1,6 +1,8 @@
+import AiModal from '@/components/Aimodal';
 import Details from '@/components/Details';
 import Ingredients from '@/components/Ingredients';
 import Instructions from '@/components/Instructions';
+import LogMealButton from '@/components/LogMealButton';
 import { api } from '@/convex/_generated/api';
 import { Id } from '@/convex/_generated/dataModel';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,14 +10,21 @@ import { useQuery } from 'convex/react';
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 export default function RecipePage() {
     const {recipeId} = useLocalSearchParams();
-    const recipeIdString =
-    typeof recipeId === "string" ? recipeId : recipeId?.[0] ?? "";
+    const recipeIdString =typeof recipeId === "string" ? recipeId : recipeId?.[0] ?? "";
     const recipe = useQuery(api.recipe.getRecipe,{recipeId:recipeIdString as Id<"recipes">})
     const [activeTab,setActiveTab] = useState<'Details'|'Ingredients'|'Instructions'|'Ratings'>('Details')
+    const recipeData= {
+        title: recipe?.title as string,
+        ingredients: recipe?.ingredients as any[],
+        instructions: recipe?.instruction as any[],
+        nutrition: recipe?.nutrition as any,
+        difficulty: recipe?.difficulty as string,
+        totalTime: recipe?.totalTime as number
+    }
   return (
     <View className='flex-1 bg-background-light dark:bg-background-dark' >
 
@@ -51,6 +60,7 @@ export default function RecipePage() {
        <View className="flex-1">
         { activeTab ==='Details' &&
         (
+            <ScrollView>
            <Details
            description={recipe?.description}
            difficulty={recipe?.difficulty}
@@ -58,6 +68,7 @@ export default function RecipePage() {
            servings={recipe?.servings}
            nutritions={recipe?.nutrition}
            />
+           </ScrollView>
         ) 
         }
         { activeTab === 'Ingredients' && (
@@ -80,6 +91,7 @@ export default function RecipePage() {
         }
         {
             activeTab ==='Instructions' && (
+                <View>
                 <FlatList 
                 data={recipe?.instruction}
                 keyExtractor={(item)=>`${item.stepNumber}`}
@@ -89,19 +101,26 @@ export default function RecipePage() {
                     duration={item.duration}
                     imageUrl={item.imageUrl}
                     />
+                    
                 )}
                 />
+                 <LogMealButton recipeId={recipeIdString} nutrition={recipe?.nutrition} />
+                </View>
 
             )
         }
         {
             activeTab === 'Ratings' && (
+                <View>
                 <Text> Ratings </Text>
-
+               
+                </View>
+                
             )
         }
 
        </View>
+       <AiModal recipeId={recipeIdString as Id<'recipes'>} recipeData={recipeData} />
      
     </View>
   )

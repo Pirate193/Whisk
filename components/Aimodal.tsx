@@ -1,4 +1,5 @@
 import { api } from '@/convex/_generated/api';
+import { Id } from '@/convex/_generated/dataModel';
 import { useAuth } from '@clerk/clerk-expo';
 import { useThreadMessages } from "@convex-dev/agent/react";
 import { Ionicons } from '@expo/vector-icons';
@@ -7,7 +8,19 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, FlatList, KeyboardAvoidingView, Modal, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Message from './message';
 
-const AiModal = () => {
+interface contextProps{
+  recipeId?: Id<"recipes">;
+  recipeData?: {
+    title: string;
+    ingredients: any[];
+    instructions: any[];
+    nutrition: any;
+    difficulty: string;
+    totalTime: number;
+  };
+}
+
+const AiModal = ({recipeId,recipeData}:contextProps) => {
   const [showModal, setShowModal] = useState(false);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -58,7 +71,10 @@ const AiModal = () => {
     setIsLoading(true);
 
     try {
-      await chat({ threadId: threadId as any, message: messageText });
+      await chat({ threadId: threadId as any, message: messageText,userId:userId as string,
+        recipeId:recipeId ,
+        recipeData:recipeData
+      });
     } catch (error) {
       console.error('Failed to send message:', error);
       setInput(messageText);
@@ -91,7 +107,7 @@ const AiModal = () => {
       >
         <KeyboardAvoidingView 
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          className='flex-1 bg-gray-50 dark:bg-black'
+          className='flex-1  bg-gray-50 dark:bg-black'
         >
           {/* Header */}
           <View className='bg-white dark:bg-secondary-dark pt-2 pb-4 px-4 flex-row items-center justify-between shadow-sm'>

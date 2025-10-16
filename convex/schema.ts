@@ -278,57 +278,7 @@ export default defineSchema({
     .index("by_userId", ["userId"]),
 
 
-   aiConversations:defineTable({
-    userId: v.string(),
-    
-    // Conversation Context
-    conversationType: v.union(
-      v.literal("recipe_adjustment"), // Modifying a recipe
-      v.literal("meal_planning"), // Planning meals
-      v.literal("cooking_help"), // General cooking questions
-      v.literal("nutrition_advice"), // Nutrition-related
-      v.literal("ingredient_substitute"), // Finding substitutes
-      v.literal("general") // General chat
-    ),
-    
-    // Context IDs (what are they talking about)
-    recipeId: v.optional(v.id("recipes")),
-    mealPlanId: v.optional(v.id("mealPlans")),
-    
-    // Messages
-    messages: v.array(v.object({
-      role: v.union(v.literal("user"), v.literal("assistant")),
-      content: v.string(),
-      timestamp: v.number(),
-      
-      // For voice messages
-      isVoice: v.optional(v.boolean()),
-      audioUrl: v.optional(v.string()),
-      
-      // For recipe modifications
-    modificationMade: v.optional(v.object({
-        type: v.string(), // "ingredient_swap", "portion_adjust"
-        details: v.string()
-      }))
-    })),
-    
-    // Session
-    isActive: v.boolean(),
-    lastMessageAt: v.number(),
-    
-    // Metadata
-    totalMessages: v.number(),
-    tokenUsage: v.optional(v.object({
-      input: v.number(),
-      output: v.number()
-    })),
-    
-    createdAt: v.number(),
-    updatedAt: v.number()
-   })
-    .index("by_userId", ["userId"])
-    .index("by_userId_isActive", ["userId", "isActive"])
-    .index("by_recipeId", ["recipeId"]),
+
 
     //modified recipes by ai
   recipeModifications: defineTable({
@@ -345,7 +295,6 @@ export default defineSchema({
     ),
     
     userRequest: v.string(),
-    
     // Changes Made
     ingredientsChanged: v.array(v.object({
       original: v.string(),
@@ -396,8 +345,6 @@ export default defineSchema({
     
     // Engagement
     helpfulCount: v.number(), // Other users marked as helpful
-    
-    
   })
     .index("by_recipeId", ["recipeId"])
     .index("by_userId", ["userId"])
@@ -490,6 +437,4 @@ export default defineSchema({
   })
     .index("by_userId_feature", ["userId", "feature"])
     .index("by_userId", ["userId"])
-
-
 })

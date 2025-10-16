@@ -54,7 +54,7 @@ Your goal is to make cooking enjoyable, accessible, and aligned with users' goal
         searchRecipe,
         generateMealPlan
     },
-    maxSteps:10,
+    maxSteps:15,
 })
 
 
@@ -69,14 +69,35 @@ export const createThread = mutation({
 })
 
 export const chat = action({
-    args:{threadId:v.string(),message:v.string()},
+    args:{threadId:v.string(),message:v.string(),userId:v.string(),
+         recipeId:v.optional(v.id('recipes')),
+         recipeData:v.optional(v.object({
+            title:v.string(),
+            ingredients:v.array(v.any()),
+            instructions:v.array(v.any()),
+            nutrition:v.any(),
+            difficulty:v.string(),
+            totalTime:v.number()
+         }))
+    },
     handler: async(ctx,args)=>{
         const {thread} = await whisky.continueThread(ctx,{
             threadId:args.threadId
         })   
+        const contextMessage =`
+        the user is currently viewing in 
+        RecipeId: ${args.recipeId}
+        recipeName:${args.recipeData?.title}
+        recipeIngredients:${JSON.stringify(args.recipeData?.ingredients)}
+        recipeInstructions:${JSON.stringify(args.recipeData?.instructions)}
+        recipeNutrition:${JSON.stringify(args.recipeData?.nutrition)}
+        recipeDifficulty:${args.recipeData?.difficulty}
+        recipeTotalTime:${args.recipeData?.totalTime} min`
         const response = await thread.streamText(
             {
-            prompt:args.message
+            prompt:args.message,
+            system: `The current user's ID is: ${args.userId}. Always use this exact ID when calling tools that require userId.
+             extra context: ${contextMessage} `
         },
         {
             saveStreamDeltas:{
@@ -84,7 +105,7 @@ export const chat = action({
             }
         }
     )
-
+    
     await response.consumeStream();
     }
 })

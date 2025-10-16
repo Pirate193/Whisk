@@ -82,7 +82,7 @@ export const createRecipe = internalMutation({
     args:{
         recipe:v.object({
             
-            externalId: v.optional(v.string()),
+      externalId: v.optional(v.string()),
       title: v.string(),
       description: v.optional(v.string()),
       imageUrl: v.string(),
@@ -134,4 +134,14 @@ export const createRecipe = internalMutation({
         const recipeId = await ctx.db.insert('recipes',args.recipe);
         return recipeId;
     }
+})
+
+export const getRecipeByExternalId = query({
+  args:{externalId:v.string()},
+  handler: async (ctx, args) => {
+     return await ctx.db
+      .query("recipes")
+      .withIndex("by_externalId", (q) => q.eq("externalId", args.externalId))
+      .first();
+  }
 })

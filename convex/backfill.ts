@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { internal } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 import { action } from "./_generated/server";
 export const backfill= action({
     args:{
@@ -17,6 +17,16 @@ export const backfill= action({
         for(const recipe of data.recipes){
             try{
                 const transformedRecipe = transformRecipe(recipe);
+                //check for existing recipe 
+                const existing = await ctx.runQuery(api.recipe.getRecipeByExternalId,{externalId:transformedRecipe.externalId})
+                if(existing){
+                    results.push({
+                        success:false,
+                        error:"Recipe already exists",
+                        title:recipe.title
+                    })
+                    continue;
+                }
                 const recipeId:string = await ctx.runMutation(internal.recipe.createRecipe, {recipe: transformedRecipe});
                 results.push({
                     success:true,
@@ -45,7 +55,7 @@ export function transformRecipe(recipe:any){
     return{
         externalId: recipe.id?.toString(),
         title: recipe.title,
-        description:recipe.summary?.replace(/<[^>]+>/g, '').substring(0,500),
+        description:recipe.summary?.replace(/<[^>]+>/g, '').substring(0,1000),
         imageUrl:recipe.image,
         servings:recipe.servings||4,
         prepTime:recipe.preparationMinutes||0,

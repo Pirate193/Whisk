@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { internalMutation, query } from "./_generated/server";
+import { internalMutation, mutation, query } from "./_generated/server";
 
 
 export const getCurrentUser = query({
@@ -78,3 +78,81 @@ export const createUser = internalMutation({
     }
 })
 
+
+export const getUser = query({
+    args:{userId:v.string()},
+    handler: async (ctx,args)=>{
+        return await ctx.db.query('userProfiles').withIndex('by_userId',(q)=>q.eq('userId',args.userId)).first();
+    }
+})
+
+export const updateProfile = mutation({
+    args:{
+        userId:v.string(),
+        email: v.string(),
+        username: v.optional(v.string()),
+        avatarUrl:v.optional(v.string()),
+
+        //dietary info
+        dietaryPreferences: v.optional(v.array(v.string())),
+        allergies: v.optional(v.array(v.string())),
+        dislikes: v.optional(v.array(v.string())),
+        medications: v.optional(v.array(v.object({
+            name:v.string(),
+            interactions:v.array(v.string())
+        }))),
+        healthGoals:v.optional(v.object({
+            goal:v.union(
+                v.literal("lose_weight"),
+                v.literal('gain_muscle'),
+                v.literal('maintain'),
+                v.literal('eat_healthy')
+            ),
+            activityLevel:v.union(
+                v.literal('sedentary'),
+                v.literal('light'),
+                v.literal('moderate'),
+                v.literal('active')
+            ),
+            targetWeight:v.optional(v.number()),
+            currentWeight:v.optional(v.number()),
+            gender:v.optional(v.union(v.literal('male'),v.literal('famale'))),
+            age:v.optional(v.number())
+        })),
+        //nutrition Targets
+        dailyTargets:v.optional(v.object({
+            calories:v.number(),
+            protein:v.number(),
+            carbs:v.number(),
+            fat:v.number(),
+            fiber:v.optional(v.number()),
+            sugar:v.optional(v.number()),
+        })),
+        cuisinePreferences:v.optional(v.array(v.string())),
+        cookingSkillLevel:v.optional(v.union(
+            v.literal('beginner'),
+            v.literal('intermediate'),
+            v.literal('expert')
+        )),
+    },
+    handler: async (ctx ,args)=>{
+        const user = await ctx.db.query('userProfiles').withIndex('by_userId',(q)=>q.eq('userId',args.userId)).first();
+        if(!user) return;
+        
+        const updated = await ctx.db.patch(user._id,{
+            username:args.username,
+            avatarUrl:args.avatarUrl,
+            dietaryPreferences:args.dietaryPreferences,
+            allergies:args.allergies,
+            dislikes:args.dislikes,
+            medications:args.medications,
+            healthGoals:args.healthGoals,
+            dailyTargets:args.dailyTargets,
+            cuisinePreferences:args.cuisinePreferences,
+            cookingSkillLevel:args.cookingSkillLevel
+        })
+
+        return updated
+
+    }
+})

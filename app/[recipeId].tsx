@@ -5,17 +5,28 @@ import Instructions from '@/components/Instructions';
 import LogMealButton from '@/components/LogMealButton';
 import { api } from '@/convex/_generated/api';
 import { Id } from '@/convex/_generated/dataModel';
+import { useAuth } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
-import { useQuery } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 export default function RecipePage() {
     const {recipeId} = useLocalSearchParams();
+    const {userId} = useAuth();
     const recipeIdString =typeof recipeId === "string" ? recipeId : recipeId?.[0] ?? "";
     const recipe = useQuery(api.recipe.getRecipe,{recipeId:recipeIdString as Id<"recipes">})
+    const favourites = useMutation(api.favourites.addfavourite)
+    const isfavourite = useQuery(api.favourites.getfavourite,{userId:userId!,recipeId:recipeIdString as Id<"recipes">})
+    useEffect(() => {
+        if(isfavourite){
+            setLiked(true)
+        }
+      
+    },[isfavourite])
+    const [liked, setLiked] = useState(false);
     const [activeTab,setActiveTab] = useState<'Details'|'Ingredients'|'Instructions'|'Ratings'>('Details')
     const recipeData= {
         title: recipe?.title as string,
@@ -25,6 +36,9 @@ export default function RecipePage() {
         difficulty: recipe?.difficulty as string,
         totalTime: recipe?.totalTime as number
     }
+    const handlelike = async () => {
+        await favourites({userId:userId!,recipeId:recipeIdString as Id<"recipes">});
+    }
   return (
     <View className='flex-1 bg-background-light dark:bg-background-dark' >
 
@@ -33,11 +47,11 @@ export default function RecipePage() {
         <TouchableOpacity onPress={() => router.back()} >
             <Ionicons name='chevron-back-outline' size={32}   />
         </TouchableOpacity>
-        <View>
+        <View className='flex-1 items-center' >
              <Text className='text-2xl font-bold dark:text-white'numberOfLines={1} >{recipe?.title} </Text>
         </View>
-           <TouchableOpacity>
-            <Ionicons name='heart-outline' size={32} />
+           <TouchableOpacity onPress={handlelike}>
+            <Ionicons name={liked ? 'heart' : 'heart-outline'} color={liked ? 'red' : 'black'}  size={32} />
            </TouchableOpacity>
         </View> 
         <View>

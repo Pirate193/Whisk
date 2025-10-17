@@ -2,9 +2,10 @@ import RecipeCard from '@/components/RecipeCard';
 import SearchBar from '@/components/SearchBar';
 import { api } from '@/convex/_generated/api';
 import { Ionicons } from '@expo/vector-icons';
+import { FlashList } from '@shopify/flash-list';
 import { useQuery } from 'convex/react';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 
 const Search = () => {
   const [search, setSearch] = useState('');
@@ -59,7 +60,7 @@ const Search = () => {
               <Text className='text-sm text-gray-600 dark:text-gray-400 px-2 py-3'>
                 Found {recipe.length} recipe{recipe.length !== 1 ? 's' : ''}
               </Text>
-              <FlatList
+              <FlashList
                 data={recipe}
                 keyExtractor={(item) => item._id}
                 renderItem={({ item }) => (
@@ -73,9 +74,7 @@ const Search = () => {
                   />
                 )}
                 numColumns={2}
-                key={2}
-                contentContainerClassName='pb-4'
-                showsVerticalScrollIndicator={false}
+                masonry
               />
             </View>
           )}
@@ -110,7 +109,7 @@ const Search = () => {
               <Text className='text-sm font-semibold text-gray-600 dark:text-gray-400 px-2 py-3'>
                 Popular Recipes
               </Text>
-              <FlatList
+              <FlashList
                 data={popular}
                 keyExtractor={(item) => item._id}
                 renderItem={({ item }) => (
@@ -126,9 +125,7 @@ const Search = () => {
                  
                 )}
                 numColumns={2}
-                key={2}
-                columnWrapperStyle={{ gap: 12 }}
-                contentContainerStyle={{ padding: 12, paddingBottom: 16 }}
+                masonry
               />
             </View>
           )}

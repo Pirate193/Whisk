@@ -15,7 +15,7 @@ interface RecipeCardProps{
 const RecipeCard = ({id,imageUrl,title,difficulty,duration,dietaryTags}:RecipeCardProps) => {
 
   return (
-    <TouchableOpacity className='bg-secondary-light  mb-2 flex-1 rounded-xl  dark:bg-secondary-dark' onPress={()=>router.push({pathname:'/[recipeId]',params:{recipeId:id}})} >
+    <TouchableOpacity className='bg-secondary-light  mb-2 mx-2 flex-1 rounded-xl  dark:bg-secondary-dark' onPress={()=>router.push({pathname:'/[recipeId]',params:{recipeId:id}})} >
         <View className='relative ' >
             <Image
             source={imageUrl}
@@ -42,12 +42,12 @@ const RecipeCard = ({id,imageUrl,title,difficulty,duration,dietaryTags}:RecipeCa
         </View>
         </View>
     </View>
-      <View className='mt-2' >
+      <View className='mt-2 px-2' >
         <Text className='text-base text-text-light dark:text-text-dark' 
         numberOfLines={2}>{title} </Text>
        </View>
        { dietaryTags && dietaryTags.length > 0 && (
-        <View className='flex flex-row flex-wrap' >
+        <View className='flex flex-row flex-wrap p-2 ' >
             {dietaryTags.slice(0,3).map((tags)=>(
                 <View key={tags} className='gap-2 rounded-full bg-primary-light px-2 mt-2 dark:bg-primary-dark ' >
                     <Text className='text-text-light ' >{tags}</Text>

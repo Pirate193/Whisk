@@ -154,7 +154,6 @@ export default defineSchema({
     favourites:defineTable({
         userId:v.string(),
         recipeId:v.id('recipes'),
-        addedAt:v.number()
     })
     .index('by_userId',['userId'])
     .index('by_recipeId',['recipeId'])
@@ -166,8 +165,6 @@ export default defineSchema({
         description:v.optional(v.string()),
         emoji:v.optional(v.string()),
         recipeIds:v.array(v.id('recipes')),
-        isDefault:v.boolean(),
-        createdAt:v.number(),
         updatedAt:v.number()
     })
       .index('by_userId',['userId']),
@@ -332,19 +329,10 @@ export default defineSchema({
   recipeReviews: defineTable({
     userId: v.string(),
     recipeId: v.id("recipes"),
-    
     rating: v.number(), // 1-5
     review: v.optional(v.string()),
-    
-    // Cook Details
-    didModify: v.boolean(),
-    modifications: v.optional(v.string()), // "Used chicken instead of beef"
-    
-    // Photos
-    photoUrls: v.optional(v.array(v.string())),
-    
-    // Engagement
-    helpfulCount: v.number(), // Other users marked as helpful
+    photoUrls: v.optional(v.array(v.id('_storage'))),
+    helpfulCount: v.number(), 
   })
     .index("by_recipeId", ["recipeId"])
     .index("by_userId", ["userId"])

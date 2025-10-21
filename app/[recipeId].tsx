@@ -2,16 +2,19 @@ import AiModal from '@/components/Aimodal';
 import Details from '@/components/Details';
 import Ingredients from '@/components/Ingredients';
 import Instructions from '@/components/Instructions';
-import LogMealButton from '@/components/LogMealButton';
+import LogModal from '@/components/logmodal';
+import { Button } from '@/components/ui/Button';
 import { api } from '@/convex/_generated/api';
 import { Id } from '@/convex/_generated/dataModel';
 import { useAuth } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
+import BottomSheet from '@gorhom/bottom-sheet';
+import { FlashList } from '@shopify/flash-list';
 import { useMutation, useQuery } from 'convex/react';
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { FlatList, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 export default function RecipePage() {
     const {recipeId} = useLocalSearchParams();
@@ -39,6 +42,7 @@ export default function RecipePage() {
     const handlelike = async () => {
         await favourites({userId:userId!,recipeId:recipeIdString as Id<"recipes">});
     }
+    const Ref = useRef<BottomSheet>(null);
   return (
     <View className='flex-1 bg-background-light dark:bg-background-dark' >
 
@@ -86,7 +90,7 @@ export default function RecipePage() {
         ) 
         }
         { activeTab === 'Ingredients' && (
-            <FlatList
+            <FlashList
             data={recipe?.ingredients}
             keyExtractor={(item,index)=>`${item}-${index}`}
             renderItem={({item,index})=>(
@@ -105,8 +109,8 @@ export default function RecipePage() {
         }
         {
             activeTab ==='Instructions' && (
-                <View>
-                <FlatList 
+                <View className='flex-1' >
+                <FlashList
                 data={recipe?.instruction}
                 keyExtractor={(item)=>`${item.stepNumber}`}
                 renderItem={({item})=>(
@@ -118,8 +122,10 @@ export default function RecipePage() {
                     
                 )}
                 />
-                 <LogMealButton recipeId={recipeIdString} nutrition={recipe?.nutrition} />
-                </View>
+              
+                 <Button onPress={()=>Ref.current?.expand()} className='dark:bg-secondary-dark'  >Log </Button>
+                 <LogModal ref={Ref} recipeId={recipeIdString} nutrition={recipe?.nutrition} />
+             </View>
 
             )
         }

@@ -24,7 +24,7 @@ const Search = () => {
     api.recipe.searchRecipe, 
     debouncedSearch.length > 0 ? { query: debouncedSearch } : 'skip'
   );
-  const popular = useQuery(api.recipe.getRecipes, { limit: 20 });
+  const popular = useQuery(api.recipe.getRecipes, { limit: 50 });
 
   const isSearching = search.length > 0;
   const isLoadingSearch = isSearching && search !== debouncedSearch;

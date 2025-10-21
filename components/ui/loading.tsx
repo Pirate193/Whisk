@@ -1,12 +1,12 @@
 import React from 'react'
 import { Text, View } from 'react-native'
 
-
-export default function Collections() {
+const Loading = () => {
   return (
     <View>
-      <Text>Collections</Text>
-    
+      <Text>Loading</Text>
     </View>
   )
 }
+
+export default Loading

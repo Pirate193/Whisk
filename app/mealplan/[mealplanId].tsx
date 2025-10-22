@@ -1,3 +1,4 @@
+import AddRecipeToMealPlan from "@/components/mealplan/addMeal";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { Ionicons } from "@expo/vector-icons";
@@ -16,7 +17,8 @@ export default function MealPlanPage() {
   const mealplan = useQuery(api.mealplan.getMealplanById, {
     mealPlanId: mealplanId as Id<"mealPlans">,
   });
-
+  
+  const [showAddRecipeModal, setShowAddRecipeModal] = useState(false);
   const handleCompleteMeal = async () => {
     try {
       setcompleted(true);
@@ -125,7 +127,24 @@ export default function MealPlanPage() {
         )}
       />
       {/* add meal to meal plan */}
+        {/* Add Recipe Button */}
+      <TouchableOpacity 
+        onPress={() => setShowAddRecipeModal(true)}
+        className="absolute bottom-6 right-6 w-14 h-14 rounded-full bg-blue-500 items-center justify-center shadow-lg"
+      >
+        <Ionicons name="add" size={28} color="white" />
+      </TouchableOpacity>
 
+      {/* Add Recipe Modal */}
+      {mealplan && (
+        <AddRecipeToMealPlan 
+          open={showAddRecipeModal}
+          onOpen={setShowAddRecipeModal}
+          mealPlanId={mealplanId as Id<'mealPlans'>}
+          mealPlanStartDate={mealplan.startDate}
+          mealPlanEndDate={mealplan.endDate}
+        />
+      )}
     </View>
   );
 }

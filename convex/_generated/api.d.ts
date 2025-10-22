@@ -11,6 +11,7 @@
 import type * as ai from "../ai.js";
 import type * as backfill from "../backfill.js";
 import type * as favourites from "../favourites.js";
+import type * as filterrecipe from "../filterrecipe.js";
 import type * as http from "../http.js";
 import type * as meallogs from "../meallogs.js";
 import type * as mealplan from "../mealplan.js";
@@ -37,6 +38,7 @@ declare const fullApi: ApiFromModules<{
   ai: typeof ai;
   backfill: typeof backfill;
   favourites: typeof favourites;
+  filterrecipe: typeof filterrecipe;
   http: typeof http;
   meallogs: typeof meallogs;
   mealplan: typeof mealplan;

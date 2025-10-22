@@ -1,6 +1,5 @@
 import { v } from "convex/values";
-import { api } from "./_generated/api";
-import { action, mutation, query } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 
 
 export const addfavourite = mutation({
@@ -40,20 +39,7 @@ export const getfavourites = query({
     }
 })
 
-export const getfavouritesAction = action({
-    args:{userId:v.string()},
-    handler:async(ctx ,args)=>{
-        const favourites = await ctx.runQuery(api.favourites.getfavourites,{userId:args.userId})
-        
-        // const favouriteswithrecipes:any = await Promise.all(favourites.map(async(f)=>{
-        //     const recipe = await ctx.runQuery(api.recipe.getRecipe,{recipeId:f.recipeId})
-        //     return {...f,recipe:recipe}
-        // }))
 
-        // return favouriteswithrecipes
-
-    }
-})
 export const getfavourite = query({
     args:{userId:v.string(),recipeId:v.id('recipes')},
     handler:async(ctx ,args)=>{

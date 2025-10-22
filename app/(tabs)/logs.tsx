@@ -1,14 +1,17 @@
 import MealPlan from '@/components/MealPlan'
+import CreateMealPlan from '@/components/mealplan/createmealplan'
 import Today from '@/components/Today'
 import { api } from '@/convex/_generated/api'
 import { useAuth } from '@clerk/clerk-expo'
+import { FlashList } from '@shopify/flash-list'
 import { useQuery } from 'convex/react'
 import React, { useState } from 'react'
-import { FlatList, Text, TouchableOpacity, View } from 'react-native'
+import { Text, TouchableOpacity, View } from 'react-native'
 const Logs = () => {
   const [activeTab,setActiveTab] = useState<'Today'|'MealPlan'|'Logs'>('Today')
     const {userId}= useAuth()
     const MealPlans = useQuery(api.mealplan.getMealplan,{userId:userId as string})
+    const [openModal,setOpenModal] = useState(false)
    
   return (
     <View className='flex-1 bg-white dark:bg-black' >
@@ -26,7 +29,7 @@ const Logs = () => {
            </TouchableOpacity>
          ))}
         </View  >
-        <View>
+        <View className='flex-1 relative ' >
           { activeTab === 'Today' &&(
             <View >
             <Today />
@@ -34,7 +37,8 @@ const Logs = () => {
             </View>
           )}
          { activeTab === 'MealPlan' &&(
-            <FlatList
+           <View className='flex-1 relative ' >
+            <FlashList
             data={MealPlans}
             keyExtractor={(item)=>item._id}
             renderItem={({item})=>(
@@ -42,6 +46,12 @@ const Logs = () => {
               endDate={item.endDate} isActive={item.isActive} totalRecipes={item.totalRecipes} completedMeals={item.completedMeals} />
             )}
             />
+            <TouchableOpacity className='bg-black absolute bottom-20 right-8 p-4 rounded-full h-16 w-16 items-center
+            justify-center dark:bg-white ' onPress={()=> setOpenModal(true)} >
+              <Text className='text-white dark:text-black text-2xl' >+</Text>
+            </TouchableOpacity>
+            <CreateMealPlan open={openModal} onOpen={setOpenModal}  />
+            </View>
         )}
         {  activeTab === 'Logs' && (
            <Text >Logs</Text>

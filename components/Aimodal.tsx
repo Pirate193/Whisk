@@ -33,7 +33,7 @@ const AiModal = ({recipeId,recipeData}:contextProps) => {
   const hasCreatedThread = useRef(false);
 
   // This is for listing messages - only call when threadId exists
-  const { results, status } = useThreadMessages(
+  const { results } = useThreadMessages(
     api.ai.listMessages,
     threadId ? { threadId: threadId as any } : 'skip',
     { initialNumItems: 10, stream: true }

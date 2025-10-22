@@ -41,4 +41,34 @@ export const getReviews = query({
     }
 })
 
+export const helpfulCount = mutation({
+  args: {
+    reviewId: v.id('recipeReviews'),
+    recipeId:v.id('recipes'),
+    userId:v.string(),
+  },
+  handler: async (ctx, args) => {
+    // get the review
+    const review = await ctx.db.get(args.reviewId);
+    if (!review) throw new Error("Review not found");
+    
+    const existing = await ctx.db.query('recipeReviews').withIndex('by_userId_recipeId',
+        (q)=>q.eq('userId',args.userId).eq('recipeId',args.recipeId)).filter((q)=>q.eq(q.field('helpfulCount'),1))
+        .first();
+    if(existing){
+        const updated = await ctx.db.patch(args.reviewId,{
+            helpfulCount:(review.helpfulCount)-1
+        })
+        return updated 
+    }else{
+  
+    const updated = await ctx.db.patch(args.reviewId, {
+      helpfulCount: (review.helpfulCount || 0) + 1,
+    });
+
+    return updated;
+}
+  },
+});
+
 

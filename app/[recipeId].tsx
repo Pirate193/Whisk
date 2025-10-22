@@ -3,6 +3,7 @@ import Details from '@/components/Details';
 import Ingredients from '@/components/Ingredients';
 import Instructions from '@/components/Instructions';
 import LogModal from '@/components/logmodal';
+import Ratings from '@/components/Ratings';
 import { Button } from '@/components/ui/Button';
 import { api } from '@/convex/_generated/api';
 import { Id } from '@/convex/_generated/dataModel';
@@ -131,10 +132,10 @@ export default function RecipePage() {
         }
         {
             activeTab === 'Ratings' && (
-                <View>
-                <Text> Ratings </Text>
                
-                </View>
+                <Ratings recipeId={recipeIdString as Id<'recipes'>} />
+               
+            
                 
             )
         }

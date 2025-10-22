@@ -275,12 +275,14 @@ export const removeMealFromPlan = mutation({
 export const markMealCompleted = mutation ({
     args:{
         mealPlanId:v.id('mealPlans'),
+        
     },
     handler:async(ctx ,args)=>{
         const mealPlan = await ctx.db.get(args.mealPlanId);
         if(!mealPlan){
             throw new Error('meal plan not found')
         }
+
         await ctx.db.patch(args.mealPlanId,{
             completedMeals:mealPlan.completedMeals+1,
             updatedAt:Date.now(),

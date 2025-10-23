@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { api, internal } from "./_generated/api";
-import { action, internalMutation, query } from "./_generated/server";
+import { action, internalMutation, mutation, query } from "./_generated/server";
 import { transformRecipe } from "./backfill";
 
 
@@ -40,7 +40,7 @@ export const searchRecipe = query({
   }
 })
 
-// convex/recipe.ts
+
 export const searching = action({
   args: { query: v.string() },
   handler: async (ctx, args) => {
@@ -143,6 +143,19 @@ export const getRecipeByExternalId = query({
       .query("recipes")
       .withIndex("by_externalId", (q) => q.eq("externalId", args.externalId))
       .first();
+  }
+})
+
+export const viewCounts = mutation({
+  args:{
+    recipeId:v.id('recipes'),
+  },
+  handler:async(ctx ,args)=>{
+     const recipe = await ctx.db.get(args.recipeId)
+     if(!recipe) throw Error 
+     await ctx.db.patch(args.recipeId,{
+      cookCount:(recipe.cookCount)+1
+     })
   }
 })
 

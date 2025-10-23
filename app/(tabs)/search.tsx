@@ -39,6 +39,7 @@ const Search = () => {
           {isSearching ? 'Search Results' : 'Discover Recipes'}
         </Text>
         <SearchBar value={search} onChangeText={setSearch} />
+        
       </View>
 
       {/* Content */}
@@ -56,8 +57,8 @@ const Search = () => {
 
           {/* Search results */}
           {!isLoadingSearch && hasSearchResults && (
-            <View className='flex-1 px-2'>
-              <Text className='text-sm text-gray-600 dark:text-gray-400 px-2 py-3'>
+            <View className='flex-1 px-2 bg-white dark:bg-black '>
+              <Text className='text-sm text-black dark:text-gray-400 px-2 py-3'>
                 Found {recipe.length} recipe{recipe.length !== 1 ? 's' : ''}
               </Text>
               <FlashList
@@ -96,7 +97,7 @@ const Search = () => {
         </View>
       ) : (
         /* Popular recipes */
-        <View className='flex-1'>
+        <View className='flex-1 bg-white dark:bg-black '>
           {popular === undefined ? (
             <View className='flex-1 items-center justify-center'>
               <ActivityIndicator size="large" color="#3b82f6" />
@@ -107,7 +108,7 @@ const Search = () => {
           ) : (
             <View className='flex-1 '>
               <Text className='text-sm font-semibold text-gray-600 dark:text-gray-400 px-2 py-3'>
-                Popular Recipes
+                Recent Recipes
               </Text>
               <FlashList
                 data={popular}
@@ -131,6 +132,7 @@ const Search = () => {
           )}
         </View>
       )}
+      
     </View>
   );
 };

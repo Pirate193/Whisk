@@ -8,8 +8,10 @@ interface Props{
   role?:"user" | "assistant" | "tool" | "system",
 }
 
+
 const Message = ({id, text, role }:Props) => {
   const isUser = role === 'user'
+  const tool = role === 'tool'
   return (
     <View className={`mb-2 ${isUser ? 'items-end' :'items-start'}`}>
       <View
@@ -33,5 +35,13 @@ const Message = ({id, text, role }:Props) => {
     </View>
   )
 }
+const searchTool = ()=>{
+   return (
+    <View>
+      <Text> Searching for Recipes </Text>
+    </View>
+   )
+}
 
 export default Message
+

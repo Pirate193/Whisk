@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { CircularProgressBase } from "react-native-circular-progress-indicator";
 
 
@@ -34,28 +34,28 @@ export default function NutritionRings({nutrition}:Props) {
         <CircularProgressBase
         {...commonProps}
         value={fatPercentage}
-        radius={100}
+        radius={75}
         activeStrokeColor='#FF6B6B'
         inActiveStrokeColor='#FF6B6B'
         >
          <CircularProgressBase
          {...commonProps}
          value={carbsPercentage}
-         radius={75}
+         radius={50}
          activeStrokeColor="#FFD93D"
           inActiveStrokeColor="#FFD93D"
          >
          <CircularProgressBase
           {...commonProps}
             value={proteinPercentage}
-            radius={50}
+            radius={25}
             activeStrokeColor="#6BCB77"
             inActiveStrokeColor="#6BCB77"
          >
-           <View className="items-center">
+           {/* <View className="items-center">
               <Text className="text-lg font-semibold dark:text-white ">Calories</Text>
               <Text className="text-xl font-bold dark:text-white">{calories}</Text>
-            </View>
+            </View> */}
          </CircularProgressBase>
          </CircularProgressBase>
         </CircularProgressBase>

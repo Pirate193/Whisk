@@ -1,3 +1,4 @@
+import LogsComponent from '@/components/Logs'
 import MealPlan from '@/components/MealPlan'
 import CreateMealPlan from '@/components/mealplan/createmealplan'
 import Today from '@/components/Today'
@@ -54,7 +55,7 @@ const Logs = () => {
             </View>
         )}
         {  activeTab === 'Logs' && (
-           <Text >Logs</Text>
+          <LogsComponent />
         ) }
         </View>
        

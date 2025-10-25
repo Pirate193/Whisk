@@ -22,7 +22,7 @@ interface contextProps{
 
 const AiModal = ({recipeId,recipeData}:contextProps) => {
   const [showModal, setShowModal] = useState(false);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [threadId, setThreadId] = useState<string>('');
   
@@ -141,6 +141,7 @@ const AiModal = ({recipeId,recipeData}:contextProps) => {
                   id={item._id} 
                   text={item.text} 
                   role={item.message?.role} 
+                  message={item.message}
                 />
               )}
               contentContainerStyle={{ padding: 16, paddingBottom: 8 }}

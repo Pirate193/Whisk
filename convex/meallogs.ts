@@ -40,6 +40,15 @@ export const logMealFromPlan = mutation({
     }
 })
 
+export const getMealLogs = query({
+  args:{userId:v.string()},
+  handler:async ( ctx ,args)=>{
+    const logs = await ctx.db.query('mealLogs').withIndex('by_userId',(q)=>q.eq('userId',args.userId)).collect();
+
+    return logs
+  }
+})
+
 export const getMealLogsByDate = query({
     args:{
         userId:v.string(),
@@ -157,7 +166,7 @@ export const updateMeallog = mutation({
     servings: v.optional(v.number()),
     notes: v.optional(v.string()),
     rating: v.optional(v.number()),
-    photoUrl: v.optional(v.string()),
+    photoUrl: v.optional(v.id("_storage")),
     },
     handler:async (ctx ,args)=>{
           const { logId, ...updates } = args;

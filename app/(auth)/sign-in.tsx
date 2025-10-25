@@ -22,7 +22,6 @@ export default function Page() {
   const onSignInPress = async () => {
     if (!isLoaded) return
 
-    // Start the sign-in process using the email and password provided
     try {
       const signInAttempt = await signIn.create({
         identifier: emailAddress,
@@ -40,7 +39,7 @@ export default function Page() {
         console.error(JSON.stringify(signInAttempt, null, 2))
       }
     } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
+    
       // for more info on error handling
       console.error(JSON.stringify(err, null, 2))
       setError('Invalid email address or password')
@@ -49,11 +48,11 @@ export default function Page() {
 
   return (
      <KeyboardAvoidingView
-        className='p-4 bg-white flex-1 '
+        className='p-4 bg-white dark:bg-black flex-1 '
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={60}
         >
-        <ScrollView showsVerticalScrollIndicator={false} >
+        <ScrollView showsVerticalScrollIndicator={false}  className='flex-1' >
         
 
       <View className='flex ' >
@@ -74,10 +73,11 @@ export default function Page() {
           <TextInput 
           value={emailAddress}
           onChange={(e)=> setEmailAddress(e.nativeEvent.text)}
-          className=' p-4 rounded-2xl mt-2 mb-2 bg-gray-200 h-14'
+          className=' p-4 rounded-2xl mt-2 mb-2 bg-gray-200 h-14 dark:text-white'
           keyboardType='email-address'
           autoCapitalize='none'
           placeholder='name@example.com'
+          placeholderTextColor={'grey'}
           />
 
           <View>
@@ -89,6 +89,7 @@ export default function Page() {
               secureTextEntry={!PasswordVisible}
               placeholder='********'
               autoCapitalize='none'
+              placeholderTextColor={'grey'}
               />
 
               <TouchableOpacity onPress={()=> setPasswordVisible(!PasswordVisible)} className='absolute right-4 bottom-5' >

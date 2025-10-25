@@ -44,6 +44,7 @@ export default function RecipePage() {
         await favourites({userId:userId!,recipeId:recipeIdString as Id<"recipes">});
     }
     const Ref = useRef<BottomSheet>(null);
+    const [openModal,setOpenModal] = useState(false);
   return (
     <View className='flex-1 bg-background-light dark:bg-background-dark' >
 
@@ -124,8 +125,8 @@ export default function RecipePage() {
                 )}
                 />
               
-                 <Button onPress={()=>Ref.current?.expand()} className='dark:bg-secondary-dark'  >Log </Button>
-                 <LogModal ref={Ref} recipeId={recipeIdString} nutrition={recipe?.nutrition} />
+            <Button onPress={()=>setOpenModal(true)} className='dark:bg-secondary-dark'  >Log </Button>
+                 <LogModal open={openModal} onOpen={setOpenModal} recipeId={recipeIdString} nutrition={recipe?.nutrition} />
              </View>
 
             )

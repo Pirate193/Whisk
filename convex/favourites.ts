@@ -126,6 +126,18 @@ export const getCollectionId = query({
     args:{id:v.id('collections')},
     handler: async(ctx ,args)=>{
         const collection = await ctx.db.get(args.id)
-        return collection
+        if(!collection){
+            throw new Error('collection not found')
+        }
+        const collectionswithrecipes = await Promise.all(
+            collection.recipeIds.map(async(r)=>{
+                const recipe = await ctx.db.get(r)
+                return {...recipe}
+            })
+        )
+        return {
+            ...collection,
+            recipes:collectionswithrecipes
+        }
     }
 })

@@ -1,5 +1,6 @@
 import Collections from '@/components/collections';
 import Favourites from '@/components/favourites';
+import Settings from '@/components/settings';
 import { api } from '@/convex/_generated/api';
 import { useAuth } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,6 +13,7 @@ const Profile = () => {
       const {userId}= useAuth();
       const user = useQuery(api.users.getUser,{userId:userId!});
       const [activeTab, setActiveTab] = useState<'Favourites'|'Collections'>('Favourites');
+      const [openModal,setOpenModal] = useState(false);
 
   return (
     <View className='flex-1 bg-background-light dark:bg-background-dark' >
@@ -26,7 +28,7 @@ const Profile = () => {
           <Text className='text-lg dark:text-white' >{user?.username}</Text>
           <Text className='text-sm text-gray-500 dark:text-gray-400' >{user?.email}</Text>
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => setOpenModal(true)}>
           <Ionicons name='settings-outline' size={30} />
         </TouchableOpacity>
       </View>
@@ -48,11 +50,11 @@ const Profile = () => {
           <Favourites />
       )}
       {activeTab === 'Collections' &&(
-        <View>
-          <Collections />
-        </View>
-      )}
       
+          <Collections />
+       
+      )}
+      <Settings open={openModal} onOpen={setOpenModal} />
     </View>
   )
 }

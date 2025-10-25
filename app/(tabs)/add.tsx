@@ -1,4 +1,3 @@
-import Settings from '@/components/settings';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { Button, Text, View } from 'react-native';
@@ -34,7 +33,7 @@ const Add = () => {
       >
         <BottomSheetView className='flex flex-1 bg-black justify-center items-center'>
           <Text>Bottom Sheet ✅</Text>
-          <Settings />
+        
         </BottomSheetView>
       </BottomSheet>
     </View>

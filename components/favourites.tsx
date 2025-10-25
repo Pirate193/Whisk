@@ -12,7 +12,7 @@ export default function Favourites() {
     const favourites = useQuery(api.favourites.getfavourites,{userId:userId!});
     const recipeId = favourites?.map((favourite) => favourite.recipeId);
   return (
-    <View className='flex-1' >
+    <View className='flex-1 ' >
       <FlashList 
       data={favourites}
       keyExtractor={(item)=>item._id}
@@ -23,6 +23,7 @@ export default function Favourites() {
       numColumns={2}
       masonry
       />
+      <View className='h-20' />
     </View>
   )
 }

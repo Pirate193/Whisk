@@ -63,18 +63,21 @@ export default function MealPlanPage() {
     <View className="flex-1 bg-white dark:bg-black">
       {/* Enhanced Header */}
       <View className="px-4 pt-4 pb-3 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800">
-        <View className="flex-row items-center justify-between mb-3">
+        <View className="flex-row items-center mb-2">
           <TouchableOpacity onPress={() => router.back()}>
             <Ionicons name="chevron-back" size={28} color="#6b7280" />
           </TouchableOpacity>
+          <View className="flex-1" >
+             <Text numberOfLines={1} className="text-2xl font-bold dark:text-white mb-1">
+          {mealplan?.name}
+        </Text>
+          </View>
           <TouchableOpacity>
             <Ionicons name="ellipsis-horizontal" size={24} color="#6b7280" />
           </TouchableOpacity>
         </View>
 
-        <Text className="text-2xl font-bold dark:text-white mb-1">
-          {mealplan?.name}
-        </Text>
+       
         
         {mealplan?.description && (
           <Text className="text-sm text-gray-500 dark:text-gray-400 mb-3">
@@ -132,7 +135,7 @@ export default function MealPlanPage() {
       >
         {sortedDates.length === 0 ? (
           <View className="flex-1 items-center justify-center py-20">
-            <View className="w-24 h-24 rounded-full bg-gray-100 dark:bg-gray-800 items-center justify-center mb-4">
+            <View className="w-24 h-24 rounded-full bg-gray-100 dark:bg-black items-center justify-center mb-4">
               <Ionicons name="calendar-outline" size={48} color="#9ca3af" />
             </View>
             <Text className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -191,7 +194,7 @@ export default function MealPlanPage() {
 
                   {/* Meal Card */}
                   <TouchableOpacity
-                    className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-3 border border-gray-200 dark:border-gray-800"
+                    className="bg-secondary-light dark:bg-secondary-dark rounded-2xl p-3 border border-gray-200 dark:border-black"
                     onPress={() => router.push({ pathname: '/[recipeId]', params: { recipeId: item.recipeId } })}
                     activeOpacity={0.7}
                   >
@@ -264,7 +267,7 @@ export default function MealPlanPage() {
 
                     {/* Notes */}
                     {item.notes && (
-                      <View className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-800">
+                      <View className="mt-3 pt-3 ">
                         <View className="flex-row items-start">
                           <Ionicons name="document-text-outline" size={14} color="#9ca3af" />
                           <Text className="text-xs text-gray-600 dark:text-gray-400 ml-2 flex-1">
@@ -287,7 +290,7 @@ export default function MealPlanPage() {
       {/* Floating Add Button */}
       <TouchableOpacity
         onPress={() => setShowAddRecipeModal(true)}
-        className="absolute bottom-6 right-6 w-16 h-16 rounded-full bg-blue-500 items-center justify-center shadow-lg"
+        className="absolute bottom-6 right-6 w-16 h-16 rounded-full bg-black items-center justify-center shadow-lg"
         style={{
           shadowColor: "#3b82f6",
           shadowOffset: { width: 0, height: 4 },

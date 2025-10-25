@@ -7,12 +7,13 @@ import { BottomSheetModal, BottomSheetTextInput, BottomSheetView } from "@gorhom
 import { useAction, useMutation } from "convex/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
+import { FlashList } from "@shopify/flash-list";
 import {
-    ActivityIndicator,
-    FlatList,
-    Text,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  FlatList,
+  Text,
+  TouchableOpacity,
+  View
 } from "react-native";
 import Message from "./message";
 
@@ -113,17 +114,18 @@ const Ai = ({ ref, recipeId, recipeData }: Props) => {
             </Text>
           </View>
         ) : (
-          <FlatList
-            ref={flatListRef}
-            data={results || []}
-            keyExtractor={(item) => item._id}
-            renderItem={({ item }) => (
-              <Message
-                id={item._id}
-                text={item.text}
-                role={item.message?.role}
-              />
-            )}
+          <FlashList 
+          data={results}
+          keyExtractor={(item)=>item._id}
+          renderItem={({item})=>(
+            <Message
+            id={item._id}
+            text={item.text}
+            role={item.message?.role}
+            message={item.message}
+            />
+          )}
+          
             contentContainerStyle={{ padding: 16, paddingBottom: 8 }}
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={

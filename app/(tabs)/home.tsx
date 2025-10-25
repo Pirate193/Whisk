@@ -14,6 +14,7 @@ export default function Home() {
   const recipes = useQuery(api.recipe.getRecipes, { limit: 20 });
   const { userId } = useAuth();
   const user = useQuery(api.users.getUser, { userId: userId as string });
+  
   const date = new Date().toISOString().split("T")[0];
   const todaysMeals = useQuery(
     api.mealplan.getMealplanByDate,
@@ -43,7 +44,7 @@ export default function Home() {
         <Text className="text-3xl dark:text-white"> Welcome 
         <Text className="dark:text-white text-xl"> {user?.username} </Text>
         </Text>
-        <Text>Today {formatDate()} </Text>
+        <Text className="text-2xl font-bold text-gray-900 dark:text-white" >Today {formatDate()} </Text>
       </View>
       {/* today stats  */}
       <View className="flex-row justify-between  mb-6 px-2 ">
@@ -93,7 +94,7 @@ export default function Home() {
                           : "cafe-outline"
                   }
                   size={20}
-                  className="dark:bg-white"
+                  color='#e1e65c'
                 />
                 <Text className="dark:text-white">{meal.mealType}</Text>
               </View>
@@ -113,7 +114,7 @@ export default function Home() {
                 <View className="">
                   <Text
                     numberOfLines={2}
-                    className="text-wrap
+                    className="dark:text-white
                     "
                   >
                     {meal.recipe?.title}
@@ -162,7 +163,7 @@ export default function Home() {
                 <View className="">
                   <Text
                     numberOfLines={2}
-                    className="text-wrap
+                    className="dark:text-white
                     "
                   >
                     {item.title}

@@ -1,7 +1,6 @@
 import { ThemeProvider } from "@/providers/themeProvider";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { tokenCache } from '@clerk/clerk-expo/token-cache';
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { Stack } from "expo-router";
@@ -17,16 +16,19 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }} >
   <ClerkProvider tokenCache={tokenCache} >
     <ConvexProviderWithClerk client={convex}  useAuth={useAuth}>
-     <BottomSheetModalProvider>
+   
       <ThemeProvider>
       <SafeAreaProvider>
            <SafeAreaView className="flex-1" >
           <StatusBar style="dark" />
-          <Stack screenOptions={{headerShown:false}} />
+          <Stack screenOptions={{headerShown:false}} >
+            <Stack.Screen name="(auth)" />
+            <Stack.Screen name="(tabs)" />
+          </Stack>
       </SafeAreaView>
       </SafeAreaProvider>
       </ThemeProvider>
-      </BottomSheetModalProvider>
+     
     </ConvexProviderWithClerk>
     </ClerkProvider>
    </GestureHandlerRootView>

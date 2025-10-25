@@ -191,7 +191,7 @@ export default defineSchema({
         //notes
         notes:v.optional(v.string()),
         rating:v.optional(v.number()),
-        photoUrl:v.optional(v.string()),
+        photoUrl:v.optional(v.id('_storage')),
         
     })
     .index('by_userId_date',['userId','date'])

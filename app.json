@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "routine",
-    "slug": "routine",
+    "name": "Whisk",
+    "slug": "Whisk",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -19,7 +19,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.single.Whisk"
     },
     "web": {
       "output": "static",
@@ -43,6 +44,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "487dfcb0-89b4-4d65-ad54-3c60688d7109"
+      }
+    },
+    "owner": "single"
   }
 }

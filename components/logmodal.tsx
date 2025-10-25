@@ -2,10 +2,12 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { useMutation } from "convex/react";
+import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
 import React, { useMemo, useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import SwipeableModal from "./ui/SwipableModal";
 
 
 interface LogMealButtonProps {
@@ -16,20 +18,22 @@ interface LogMealButtonProps {
     carbs: number;
     fat: number;
   };
-   ref: any;
+   open: boolean;
+   onOpen: (open: boolean) => void
 }
 
-const LogModal = ({ recipeId, nutrition, ref }: LogMealButtonProps) => {
-  const snapPoints = useMemo(() => ["25%", "50%", "90%"], []);
+const LogModal = ({ recipeId, nutrition, open, onOpen }: LogMealButtonProps) => {
+  const snapPoints = useMemo(() => [ "90%"], []);
   const [mealType, setMealType] = useState<
     "breakfast" | "lunch" | "dinner" | "snack"
   >("breakfast");
   const [servings, setServings] = useState(1);
   const [notes, setNotes] = useState("");
   const [rating, setRating] = useState(0);
-  const [photoUrl, setPhotoUrl] = useState("");
+  const [photo, setPhoto] = useState<string | null>(null);
   const mealTypes = ["breakfast", "lunch", "dinner", "snack"] as const;
   const logMeal = useMutation(api.mealplan.logMeal);
+  const generateUrl = useMutation(api.reviews.generatePhotoUrl);
   const { userId } = useAuth();
   const date = new Date().toISOString().split("T")[0];
   const Calories = nutrition?.calories || 0;
@@ -37,8 +41,34 @@ const LogModal = ({ recipeId, nutrition, ref }: LogMealButtonProps) => {
   const carbs = nutrition?.carbs || 0;
   const fat = nutrition?.fat || 0;
 
+  const takePhoto = async () => {
+      const permission = await ImagePicker.requestCameraPermissionsAsync();
+      if (!permission.granted) return;
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ["images"],
+        quality: 0.7,
+      });
+      if (!result.canceled && result.assets) {
+        setPhoto(result.assets[0].uri);
+      }
+    };
+
   const handleMealLog = async () => {
     try {
+      if (!photo) {
+        console.log("no photo detected");
+      } else {
+        const postUrl = await generateUrl();
+        const response = await fetch(photo);
+        const blob = await response.blob();
+
+        const uploadResponse = await fetch(postUrl, {
+          method: "POST",
+          headers: { "Content-Type": blob.type || "image/jpeg" },
+          body: blob,
+        });
+
+      const { storageId } = await uploadResponse.json();
       await logMeal({
         userId: userId as string,
         recipeId: recipeId as Id<"recipes">,
@@ -53,18 +83,22 @@ const LogModal = ({ recipeId, nutrition, ref }: LogMealButtonProps) => {
         },
         notes: notes || undefined,
         rating: rating > 0 ? rating : undefined,
-        photoUrl: photoUrl || undefined,
+        photoUrl: storageId,
       });
-      ref.current.close();
+      onOpen(false)
+    }
     } catch (error) {
       console.log(error);
     }
   };
   return (
-    <BottomSheet ref={ref} snapPoints={snapPoints} enablePanDownToClose={true}
-    index={0}
+    <SwipeableModal
+    visible={open}
+    onClose={() => onOpen(false)}
+    height="75%"
+    showHandle={true}
+    closeOnBackdropPress={true}
     >
-      <BottomSheetView className="flex-1 bg-white dark:bg-black ">
         <View className="mb-4">
           <Text className="text-lg font-semibold dark:text-white mb-2">
             Meal Type:
@@ -156,15 +190,21 @@ const LogModal = ({ recipeId, nutrition, ref }: LogMealButtonProps) => {
               ))}
             </View>
           </View>
-          {/* photo */}
-          {/* <View>
-                        <Text className='text-lg font-semibold dark:text-white mb-2'>Photo:</Text>
-                        <TouchableOpacity onPress={takePhoto} className='bg-gray-200 dark:bg-zinc-700 p-2 rounded-full items-center' >
-                          <Ionicons name='camera-outline' size={20} />
-                          <Text className='text-gray-700 dark:text-gray-300'>Take Photo</Text>
-                        </TouchableOpacity>
-                     </View> */}
-          {/* log Button */}
+            <TouchableOpacity className="bg-secondary-light dark:bg-secondary-dark 
+                       w-40 h-40 mx-2 justify-center items-center rounded-lg my-2 "
+                      onPress={takePhoto} >
+                       {photo ? (
+                         <Image
+                           source={{ uri: photo }}
+                           style={{ width: '100%', height: '100%',borderRadius:12 }}
+                           contentFit='cover'
+                         />
+                       ):(
+                         <View>
+                           <Ionicons name="camera-outline" size={20} />
+                         </View>
+                       )}
+            </TouchableOpacity>
           <TouchableOpacity
             onPress={handleMealLog}
             className="bg-primary-light p-4 rounded-lg items-center"
@@ -172,8 +212,7 @@ const LogModal = ({ recipeId, nutrition, ref }: LogMealButtonProps) => {
             <Text className="text-white text-xl font-bold">Log Meal</Text>
           </TouchableOpacity>
         </View>
-      </BottomSheetView>
-    </BottomSheet>
+     </SwipeableModal>
   );
 };
 

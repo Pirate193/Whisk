@@ -75,7 +75,7 @@ export const logMeal = mutation({
         notes:v.optional(v.string()),
         rating:v.optional(v.number()),
 
-        photoUrl:v.optional(v.string()),
+        photoUrl:v.optional(v.id('_storage')),
         
     },
     handler: async(ctx ,args)=>{

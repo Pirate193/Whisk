@@ -2,11 +2,13 @@ import AiModal from '@/components/Aimodal';
 import Details from '@/components/Details';
 import Ingredients from '@/components/Ingredients';
 import Instructions from '@/components/Instructions';
+import ListCollectionModal from '@/components/listCollectionModal';
 import LogModal from '@/components/logmodal';
 import Ratings from '@/components/Ratings';
 import { Button } from '@/components/ui/Button';
 import { api } from '@/convex/_generated/api';
 import { Id } from '@/convex/_generated/dataModel';
+import { useTheme } from '@/providers/themeProvider';
 import { useAuth } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import BottomSheet from '@gorhom/bottom-sheet';
@@ -23,7 +25,9 @@ export default function RecipePage() {
     const recipeIdString =typeof recipeId === "string" ? recipeId : recipeId?.[0] ?? "";
     const recipe = useQuery(api.recipe.getRecipe,{recipeId:recipeIdString as Id<"recipes">})
     const favourites = useMutation(api.favourites.addfavourite)
+    
     const isfavourite = useQuery(api.favourites.getfavourite,{userId:userId!,recipeId:recipeIdString as Id<"recipes">})
+    const {colorScheme}=useTheme();
     useEffect(() => {
         if(isfavourite){
             setLiked(true)
@@ -32,7 +36,7 @@ export default function RecipePage() {
     },[isfavourite])
     const [liked, setLiked] = useState(false);
     const [activeTab,setActiveTab] = useState<'Details'|'Ingredients'|'Instructions'|'Ratings'>('Details')
-    const recipeData= {
+    const recipeData= { // this is for the ai contex 
         title: recipe?.title as string,
         ingredients: recipe?.ingredients as any[],
         instructions: recipe?.instruction as any[],
@@ -40,32 +44,48 @@ export default function RecipePage() {
         difficulty: recipe?.difficulty as string,
         totalTime: recipe?.totalTime as number
     }
-    const handlelike = async () => {
+    const handlelike = async () => { //handle like 
         await favourites({userId:userId!,recipeId:recipeIdString as Id<"recipes">});
     }
     const Ref = useRef<BottomSheet>(null);
-    const [openModal,setOpenModal] = useState(false);
+    const [openModal,setOpenModal] = useState(false); //opening the ai modal
+    //saving to collections
+    const [openCollectionModal,setOpenCollectionModal] = useState(false);
   return (
     <View className='flex-1 bg-background-light dark:bg-background-dark' >
 
         {/* header */}
        <View className='flex-row justify-between px-2  ' >
         <TouchableOpacity onPress={() => router.back()} >
-            <Ionicons name='chevron-back-outline' size={32}   />
+            <Ionicons name='chevron-back-outline' size={32} color={
+                colorScheme === 'dark' ? 'white':'black'
+            }   />
         </TouchableOpacity>
         <View className='flex-1 items-center' >
              <Text className='text-2xl font-bold dark:text-white'numberOfLines={1} >{recipe?.title} </Text>
         </View>
-           <TouchableOpacity onPress={handlelike}>
+           {colorScheme === 'dark' ?(
+             <TouchableOpacity onPress={handlelike}>
+            <Ionicons name={liked ? 'heart' : 'heart-outline'} color={liked ? 'red' : 'white'}  size={32} />
+           </TouchableOpacity>
+           ):(
+             <TouchableOpacity onPress={handlelike}>
             <Ionicons name={liked ? 'heart' : 'heart-outline'} color={liked ? 'red' : 'black'}  size={32} />
            </TouchableOpacity>
+           )}
+           
         </View> 
-        <View>
+        <View className='relative' >
             <Image
             source={recipe?.imageUrl}  
             style={{width:'100%',height:250,borderRadius:12}}
             contentFit='cover'
             />
+            <TouchableOpacity
+            className='absolute bottom-2 right-6'
+            onPress={()=>setOpenCollectionModal(true)} >
+                <Ionicons name='bookmark-outline' size={24} color='white' />
+            </TouchableOpacity>
         </View>
         <View className='flex-row justify-around mt-2' >
             {['Details','Ingredients','Instructions','Ratings'].map((tab)=>(
@@ -143,7 +163,8 @@ export default function RecipePage() {
 
        </View>
        <AiModal recipeId={recipeIdString as Id<'recipes'>} recipeData={recipeData} />
-     
+       <ListCollectionModal open={openCollectionModal} onOpen={setOpenCollectionModal}
+       recipeId={recipeId as Id<'recipes'>} />
     </View>
   )
 } 

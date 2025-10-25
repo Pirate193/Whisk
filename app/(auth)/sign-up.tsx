@@ -1,8 +1,10 @@
+import { useTheme } from '@/providers/themeProvider';
 import { useSignUp } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import * as React from 'react';
-import { Image, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp()
@@ -16,6 +18,7 @@ export default function SignUpScreen() {
   const [error, setError] = React.useState('')
   const [pendingVerification, setPendingVerification] = React.useState(false)
   const [code, setCode] = React.useState('')
+  const {colorScheme}= useTheme();
 
     React.useEffect(() => {
      if (error) {
@@ -43,8 +46,7 @@ export default function SignUpScreen() {
       // and capture OTP code
       setPendingVerification(true)
     } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
+     
       console.error(JSON.stringify(err, null, 2))
     }
 
@@ -95,65 +97,88 @@ export default function SignUpScreen() {
 
   return (
     <KeyboardAvoidingView
-    className='p-4 bg-white flex-1 '
+    className='p-4 bg-white flex-1 dark:bg-black'
     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     keyboardVerticalOffset={60}
     >
     <ScrollView showsVerticalScrollIndicator={false} className='flex-1' >
     
           <View className='flex ' >
-            <Image 
-            source={require('../../assets/images/logo.png')}
-            className='w-40 h-40 self-center bg-white rounded-lg'
-            
-            />
+            {colorScheme === 'dark' ?(
+               <View className="items-center mb-8">
+                        <Image
+                        source={require('../../assets/images/ios-tinted.png')}
+                        style={{ width: 200, height: 200 }}
+                        className="rounded-3xl shadow-lg"
+                        contentFit="cover"
+                      />
+               </View>
+            ):(
+                   <View className="items-center mb-8">
+                            <Image
+                            source={require('../../assets/images/ios-light.png')}
+                            style={{ width: 200, height: 200 }}
+                            className="rounded-3xl shadow-lg"
+                            contentFit="cover"
+                          />
+                </View>
+            )}
+           
           </View>
-          <View  className='flex mt-4' >
+          <View  className='flex' >
             <View className='flex justify-center ' >
-              <Text className='text-2xl text-center font-bold' >Welcome to Whisk </Text>
-            <Text className='text-base text-center'>Sign Up to continue</Text>
+              <Text className='text-3xl text-center font-bold dark:text-white' >Welcome to Whisk </Text>
+            <Text className='text-base text-center dark:text-white '>Sign Up to continue</Text>
             </View>
             
             <View>
-              <Text className='mt-4 font-bold' >Email Address</Text>
+              <Text className=' font-bold dark:text-white ' >Email Address</Text>
               <TextInput 
               value={emailAddress}
               onChange={(e)=> setEmailAddress(e.nativeEvent.text)}
-              className=' p-4 rounded-2xl mt-2 mb-2 bg-gray-200 h-14'
+              className=' p-4 rounded-2xl mt-2 mb-2 dark:text-white dark:bg-secondary-dark bg-secondary-light h-14'
               keyboardType='email-address'
               autoCapitalize='none'
               placeholder='name@example.com'
               />
             <View>
-              <Text className='mt-4 font-bold' >Password</Text>
+              <Text className=' font-bold dark:text-white' >Password</Text>
               <TextInput 
               value={password}
               onChange={(e)=> setPassword(e.nativeEvent.text)}
-              className='p-4 rounded-2xl mt-2 mb-2 bg-gray-200 h-14'
+              className='p-4 rounded-2xl mt-2 mb-2 dark:text-white dark:bg-secondary-dark bg-secondary-light h-14'
               secureTextEntry={!PasswordVisible}
               placeholder='********'
               autoCapitalize='none'
               />
 
               <TouchableOpacity onPress={()=> setPasswordVisible(!PasswordVisible)} className='absolute right-4 bottom-5' >
-                {PasswordVisible ? <Ionicons name='eye' size={24} color='black' /> :
-                <Ionicons name='eye-off' size={24} color='black' />
+                {PasswordVisible ? <Ionicons name='eye' size={24} color={
+                  colorScheme === 'dark' ? 'white' : 'black'
+                } /> :
+                <Ionicons name='eye-off' size={24} color={
+                  colorScheme === 'dark' ? 'white' : 'black'
+                } />
          }
               </TouchableOpacity>
             </View>
             <View>
-              <Text className='mt-4 font-bold' >Confirm Password</Text>
+              <Text className='dark:text-white font-bold' >Confirm Password</Text>
               <TextInput 
               value={confirmPassword}
               onChange={(e)=> setConfirmPassword(e.nativeEvent.text)}
-              className='p-4 rounded-2xl mt-2 mb-2 bg-gray-200 h-14'
+              className='p-4 rounded-2xl mt-2 mb-2 dark:text-white dark:bg-secondary-dark bg-secondary-light '
               secureTextEntry={!ConfirmPasswordVisible}
               placeholder='********'
               autoCapitalize='none'
               />
               <TouchableOpacity onPress={()=> setConfirmPasswordVisible(!ConfirmPasswordVisible)} className='absolute right-4 bottom-5' >
-                {ConfirmPasswordVisible ? <Ionicons name='eye' size={24} color='black' /> :
-                <Ionicons name='eye-off' size={24} color='black' />
+                {ConfirmPasswordVisible ? <Ionicons name='eye' size={24} color={
+                  colorScheme === 'dark' ? 'white' : 'black'
+                } /> :
+                <Ionicons name='eye-off' size={24} color={
+                  colorScheme === 'dark' ? 'white' : 'black'
+                } />
          }
               </TouchableOpacity>
               </View>
@@ -162,15 +187,16 @@ export default function SignUpScreen() {
               {error ? <Text className='text-red-500' >{error}</Text> : null}
             </View>
             
-            <TouchableOpacity onPress={onSignUpPress} className='flex justify-center items-center bg-yellow-300 h-14 rounded-2xl mt-4' >
+            <TouchableOpacity onPress={onSignUpPress} className='flex justify-center items-center bg-yellow-300 p-4 rounded-2xl mt-4' >
               <Text className='font-bold'> Continue</Text>
             </TouchableOpacity>
-             <Text className='text-center mt-4'> or</Text>  
-              <TouchableOpacity className='flex  justify-center items-center bg-gray-200 h-14 rounded-2xl mt-4' >
+             <Text className='text-center mt-4 dark:text-white'> or</Text>  
+              <TouchableOpacity className='flex-row gap-2  justify-center items-center bg-secondary-light p-4  rounded-2xl mt-4' >
+              <Ionicons name='logo-google' size={24}  />
                  <Text className='text-center  font-bold' >Sign Up with Google</Text>
               </TouchableOpacity>
               <View className='flex justify-center items-center' >
-                <Text className='text-center mt-4' >Already have an account? <Text className='font-bold' onPress={()=> router.push('/sign-in')} >Sign In</Text> </Text>
+                <Text className='text-center mt-4 dark:text-white ' >Already have an account? <Text className='font-bold text-blue-600' onPress={()=> router.push('/sign-in')} >Sign In</Text> </Text>
               </View>
           </View>
         </ScrollView>

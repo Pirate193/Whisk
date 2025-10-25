@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@/providers/themeProvider";
+import { ToastProvider } from "@/providers/toastProvider";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { tokenCache } from '@clerk/clerk-expo/token-cache';
 import { ConvexReactClient } from "convex/react";
@@ -16,17 +17,20 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }} >
   <ClerkProvider tokenCache={tokenCache} >
     <ConvexProviderWithClerk client={convex}  useAuth={useAuth}>
-   
+     
       <ThemeProvider>
+        <ToastProvider>
       <SafeAreaProvider>
            <SafeAreaView className="flex-1" >
           <StatusBar style="dark" />
           <Stack screenOptions={{headerShown:false}} >
+            <Stack.Screen name='index'/>
             <Stack.Screen name="(auth)" />
             <Stack.Screen name="(tabs)" />
           </Stack>
       </SafeAreaView>
       </SafeAreaProvider>
+      </ToastProvider>
       </ThemeProvider>
      
     </ConvexProviderWithClerk>

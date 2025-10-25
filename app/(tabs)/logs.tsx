@@ -16,9 +16,9 @@ const Logs = () => {
    
   return (
     <View className='flex-1 bg-white dark:bg-black' >
-        <View>
+        <View className='p-4 ' >
           <Text className='text-lg dark:text-white' >Logs </Text>
-          <Text className='dark:text-white' > Track your Meals And Progress </Text>
+          <Text className='dark:text-white' >Track your Meals And Progress </Text>
         </View>
         <View className='flex-row justify-around mt-2'>
          {['Today','MealPlan','Logs'].map((tab)=>(

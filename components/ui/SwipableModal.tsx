@@ -26,7 +26,7 @@ export default function SwipeableModal({
   children,
   height = '90%',
   showHandle = true,
-  backgroundColor,
+
   closeOnBackdropPress = true,
 }: SwipeableModalProps) {
   const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
@@ -129,7 +129,7 @@ export default function SwipeableModal({
             right: 0,
             height: modalHeight,
             transform: [{ translateY }],
-            // backgroundColor: backgroundColor,
+          
           }}
           className="rounded-t-3xl bg-white dark:bg-black"
         >

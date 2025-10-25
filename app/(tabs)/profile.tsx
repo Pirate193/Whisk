@@ -2,6 +2,7 @@ import Collections from '@/components/collections';
 import Favourites from '@/components/favourites';
 import Settings from '@/components/settings';
 import { api } from '@/convex/_generated/api';
+import { useTheme } from '@/providers/themeProvider';
 import { useAuth } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from 'convex/react';
@@ -14,6 +15,7 @@ const Profile = () => {
       const user = useQuery(api.users.getUser,{userId:userId!});
       const [activeTab, setActiveTab] = useState<'Favourites'|'Collections'>('Favourites');
       const [openModal,setOpenModal] = useState(false);
+      const {colorScheme} = useTheme();
 
   return (
     <View className='flex-1 bg-background-light dark:bg-background-dark' >
@@ -28,8 +30,11 @@ const Profile = () => {
           <Text className='text-lg dark:text-white' >{user?.username}</Text>
           <Text className='text-sm text-gray-500 dark:text-gray-400' >{user?.email}</Text>
         </View>
-        <TouchableOpacity onPress={() => setOpenModal(true)}>
-          <Ionicons name='settings-outline' size={30} />
+        <TouchableOpacity onPress={() => setOpenModal(true)} 
+        className='absolute top-2 right-2' >
+          <Ionicons name='settings-outline' size={24} color={
+            colorScheme === 'dark' ? 'white':'black'
+          } />
         </TouchableOpacity>
       </View>
       

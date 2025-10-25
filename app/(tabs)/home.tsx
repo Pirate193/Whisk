@@ -8,7 +8,7 @@ import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "convex/react";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function Home() {
   const recipes = useQuery(api.recipe.getRecipes, { limit: 20 });
@@ -70,10 +70,16 @@ export default function Home() {
           <NutritionRings nutrition={todaysNutrition} />
         </View>
       </View>
+
       {/* we are showing recipes from meal plan here  */}
       <Text className="text-xl ml-2 font-bold text-gray-900 dark:text-white">
         Todays Meal
       </Text>
+      {todaysMeals === undefined && (
+        <View className="flex-1 items-center justify-center" >
+          <ActivityIndicator size='large' color='yellow' />
+        </View>
+      )}
       {todaysMeals && todaysMeals.length > 0 && (
         <ScrollView
           horizontal={true}
@@ -142,6 +148,11 @@ export default function Home() {
       {/* recomendations */}
       <View className="mt-2 ml-2">
         <Text className="dark:text-white font-bold">Reccomendations:</Text>
+         {recipes === undefined && (
+          <View className="flex-1 items-center justify-center" >
+            <ActivityIndicator size='large' color='yellow' />
+          </View>
+        )}
         <FlashList
           data={recipes}
           keyExtractor={(item) => item._id}

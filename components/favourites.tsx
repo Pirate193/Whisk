@@ -3,7 +3,7 @@ import { useAuth } from '@clerk/clerk-expo'
 import { FlashList } from "@shopify/flash-list"
 import { useQuery } from 'convex/react'
 import React from 'react'
-import { View } from 'react-native'
+import { ActivityIndicator, View } from 'react-native'
 import RecipeCard from './RecipeCard'
 
 
@@ -13,6 +13,11 @@ export default function Favourites() {
     const recipeId = favourites?.map((favourite) => favourite.recipeId);
   return (
     <View className='flex-1 ' >
+      {favourites === undefined && (
+        <View className='flex justify-center items-center' >
+          <ActivityIndicator size='large' color='yellow'  />
+        </View>
+      )}
       <FlashList 
       data={favourites}
       keyExtractor={(item)=>item._id}

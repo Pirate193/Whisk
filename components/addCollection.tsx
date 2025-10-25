@@ -1,8 +1,9 @@
 import { api } from '@/convex/_generated/api';
+import { useToast } from '@/providers/toastProvider';
 import { useAuth } from '@clerk/clerk-expo';
 import { useMutation } from 'convex/react';
 import React, { useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import SwipeableModal from './ui/SwipableModal';
 
@@ -18,13 +19,14 @@ const AddCollection = ({open, onOpen}:Props) => {
     const [emoji,setEmoji] = useState('');
     const addCollection = useMutation(api.favourites.addCollections);
     const [loading,setLoading] = useState(false);
+    const {success,error}=useToast();
 
     
     const emojis = ['📁', '❤️', '⭐', '🍕', '🍔', '🍰', '🥗', '🍜', '🍳', '🥘', '🍱', '🌮', '🍣', '🍝', '🥙', '🍲'];// doing like this for now befor installing a library for emojis 
     const handleCreate= async()=>{
         setLoading(true);
         if(!name){
-                alert('Please enter a name');
+                error('Error','Please enter a name');
                 setLoading(false);
                 return;
             }
@@ -40,8 +42,11 @@ const AddCollection = ({open, onOpen}:Props) => {
             })
             setLoading(false);
             onOpen(false);
-        } catch (error) {
-            console.log(error);
+         success('Success','Collection created successfully');
+        } catch (err) {
+            console.log(err);
+            setLoading(false);
+            error('Error','Something went wrong. Please try again.');
         }
     }
   return (
@@ -52,7 +57,8 @@ const AddCollection = ({open, onOpen}:Props) => {
     showHandle={true}
     closeOnBackdropPress={true}
     >
-         <KeyboardAvoidingView className="flex-1" >
+         <KeyboardAvoidingView  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }} >
           <View className="flex-row items-center justify-between px-6 py-2 border-b border-gray-200 dark:border-gray-800">
             <View>
               <Text className="text-2xl font-bold text-gray-900 dark:text-white">

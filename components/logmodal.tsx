@@ -1,5 +1,6 @@
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { useToast } from "@/providers/toastProvider";
 import { useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation } from "convex/react";
@@ -40,6 +41,7 @@ const LogModal = ({ recipeId, nutrition, open, onOpen }: LogMealButtonProps) => 
   const protein = nutrition?.protein || 0;
   const carbs = nutrition?.carbs || 0;
   const fat = nutrition?.fat || 0;
+  const {success,error}= useToast();
 
   const takePhoto = async () => {
       const permission = await ImagePicker.requestCameraPermissionsAsync();
@@ -57,9 +59,9 @@ const LogModal = ({ recipeId, nutrition, open, onOpen }: LogMealButtonProps) => 
     try {
       if (!photo) {
         console.log("no photo detected");
-      } else {
+      }
         const postUrl = await generateUrl();
-        const response = await fetch(photo);
+        const response = await fetch(photo!);
         const blob = await response.blob();
 
         const uploadResponse = await fetch(postUrl, {
@@ -86,9 +88,11 @@ const LogModal = ({ recipeId, nutrition, open, onOpen }: LogMealButtonProps) => 
         photoUrl: storageId,
       });
       onOpen(false)
-    }
-    } catch (error) {
-      console.log(error);
+      success('Success!', 'Meal logged successfully.');
+    } catch (err) {
+      console.log(err);
+       error('Error!', 'Something went wrong. Please try again.');
+       onOpen(false)
     }
   };
   return (

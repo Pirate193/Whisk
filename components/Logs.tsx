@@ -124,7 +124,7 @@ const LogsComponent = () => {
     return (
        <TouchableOpacity
         key={log._id}
-        className="flex-row items-center bg-white dark:bg-gray-900 rounded-xl p-3 mb-2 border border-gray-200 dark:border-gray-800"
+        className="flex-row items-center bg-white dark:bg-secondary-dark rounded-xl p-3 mb-2 border border-gray-200 dark:border-black"
         onPress={() => router.push({ pathname: '/[recipeId]', params: { recipeId: log.recipeId } })}
         activeOpacity={0.7}
       >
@@ -202,9 +202,6 @@ const LogsComponent = () => {
     <View className="flex-1 bg-gray-50 dark:bg-black">
       {/* Header */}
       <View className="bg-white dark:bg-black px-4 pt-4 pb-3 border-b border-gray-200 dark:border-gray-800">
-        <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-          Meal Logs
-        </Text>
 
         {/* Time Range Filter */}
         <View className="flex-row gap-2">
@@ -218,14 +215,14 @@ const LogsComponent = () => {
               onPress={() => setSelectedTimeRange(option.key as any)}
               className={`px-4 py-2 rounded-full border-2 ${
                 selectedTimeRange === option.key
-                  ? 'bg-blue-500 border-blue-500'
-                  : 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-700'
+                  ? 'bg-primary-light'
+                  : 'bg-gray-100 dark:bg-secondary-dark border-gray-300 dark:border-black'
               }`}
             >
               <Text
                 className={`text-sm font-medium ${
                   selectedTimeRange === option.key
-                    ? 'text-white'
+                    ? 'text-black'
                     : 'text-gray-700 dark:text-gray-300'
                 }`}
               >

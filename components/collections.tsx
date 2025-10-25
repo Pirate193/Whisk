@@ -16,8 +16,8 @@ const Collections = () => {
   return (
     <View className='flex-1 relative' >
       {collections === undefined ? (
-        <View className='flex justify-center items-center' >
-          <ActivityIndicator />
+        <View className='flex-1 justify-center items-center' >
+          <ActivityIndicator size='large' color='yellow' />
         </View>
       ):(
         <FlashList
@@ -25,13 +25,16 @@ const Collections = () => {
         keyExtractor={(item)=>item._id}
         renderItem={({item})=>(
           <TouchableOpacity className='flex-row gap-2 bg-secondary-light mt-2 mx-2 p-4  rounded-lg
-           'onPress={()=>router.push({pathname:'/collection/[collectionId]',params:{collectionId:item._id}})} >
+        dark:bg-secondary-dark   'onPress={()=>router.push({pathname:'/collection/[collectionId]',params:{collectionId:item._id}})} >
             <View className='bg-primary-light p-2 rounded-lg' >
               <Text className='text-2xl' >{item.emoji}</Text>
             </View>
             <View >
-              <Text className='text-lg font-bold' >{item.name} </Text>
+              <Text className='text-xl font-bold dark:text-white' >{item.name} </Text>
               {item.description &&(<Text>{item.description}</Text>)}
+              <Text className='text-sm text-gray-500 dark:text-gray-400' >
+                {item.recipeIds.length} recipes
+              </Text>
             </View>
           </TouchableOpacity>
         )}

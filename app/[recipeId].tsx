@@ -6,6 +6,7 @@ import ListCollectionModal from '@/components/listCollectionModal';
 import LogModal from '@/components/logmodal';
 import Ratings from '@/components/Ratings';
 import { Button } from '@/components/ui/Button';
+import LoadingRecipe from '@/components/ui/loadingRecipe';
 import { api } from '@/convex/_generated/api';
 import { Id } from '@/convex/_generated/dataModel';
 import { useTheme } from '@/providers/themeProvider';
@@ -34,6 +35,7 @@ export default function RecipePage() {
         }
       
     },[isfavourite])
+   
     const [liked, setLiked] = useState(false);
     const [activeTab,setActiveTab] = useState<'Details'|'Ingredients'|'Instructions'|'Ratings'>('Details')
     const recipeData= { // this is for the ai contex 
@@ -51,6 +53,25 @@ export default function RecipePage() {
     const [openModal,setOpenModal] = useState(false); //opening the ai modal
     //saving to collections
     const [openCollectionModal,setOpenCollectionModal] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+    // Simulate loading for 2 seconds
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, []);
+    if (!recipe || loading){
+        return(
+        <View className='flex-1 bg-background-light dark:bg-background-dark 
+        justify-center items-center' >
+            <LoadingRecipe />
+            <Text className='text-lg dark:text-white' > Loading Deliciousness..</Text>
+        </View>
+        )
+    }
   return (
     <View className='flex-1 bg-background-light dark:bg-background-dark' >
 

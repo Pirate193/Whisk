@@ -1,11 +1,16 @@
 import { useTheme } from '@/providers/themeProvider';
 import { useAuth } from '@clerk/clerk-expo';
 import { Image } from 'expo-image';
-import { Link, Redirect, SplashScreen } from 'expo-router';
+import { Link, Redirect } from 'expo-router';
+import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 SplashScreen.preventAutoHideAsync();
+SplashScreen.setOptions({
+  duration:4000,
+  fade:true,
+})
 const Index = () => {
    const { isSignedIn,isLoaded } = useAuth();
    const {colorScheme}=useTheme();
@@ -13,7 +18,7 @@ const Index = () => {
 
    useEffect(() => {
      if (isLoaded){
-      SplashScreen.hideAsync()
+      SplashScreen.hideAsync();
      }
    }, [isLoaded])
    

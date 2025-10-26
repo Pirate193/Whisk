@@ -4,7 +4,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from 'convex/react';
 import { router } from 'expo-router';
 import React, { useMemo, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import Loading from './ui/loading';
 
 const LogsComponent = () => {
   const { userId } = useAuth();
@@ -237,7 +238,7 @@ const LogsComponent = () => {
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {logs === undefined ? (
           <View className="flex-1 items-center justify-center py-20">
-            <ActivityIndicator size="large" color="#3b82f6" />
+            <Loading />
             <Text className="text-gray-500 dark:text-gray-400 mt-4">Loading logs...</Text>
           </View>
         ) : !groupedLogs || (

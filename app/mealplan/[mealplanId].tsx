@@ -1,4 +1,5 @@
 import AddRecipeToMealPlan from "@/components/mealplan/addMeal";
+import NotFound from "@/components/ui/notFound";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { Ionicons } from "@expo/vector-icons";
@@ -135,9 +136,7 @@ export default function MealPlanPage() {
       >
         {sortedDates.length === 0 ? (
           <View className="flex-1 items-center justify-center py-20">
-            <View className="w-24 h-24 rounded-full bg-gray-100 dark:bg-black items-center justify-center mb-4">
-              <Ionicons name="calendar-outline" size={48} color="#9ca3af" />
-            </View>
+            <NotFound />
             <Text className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
               No Meals Yet
             </Text>

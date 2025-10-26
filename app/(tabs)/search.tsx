@@ -1,11 +1,12 @@
 import RecipeCard from '@/components/RecipeCard';
 import SearchBar from '@/components/SearchBar';
+import Loading from '@/components/ui/loading';
+import NotFound from '@/components/ui/notFound';
 import { api } from '@/convex/_generated/api';
-import { Ionicons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import { useQuery } from 'convex/react';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 const Search = () => {
   const [search, setSearch] = useState('');
@@ -48,10 +49,7 @@ const Search = () => {
           {/* Loading state while debouncing */}
           {isLoadingSearch && (
             <View className='flex-1 items-center justify-start'>
-              <ActivityIndicator size="large" color="#3b82f6" />
-              <Text className='text-gray-500 dark:text-gray-400 mt-4 text-base'>
-                Searching recipes...
-              </Text>
+              <Loading />
             </View>
           )}
 
@@ -83,15 +81,8 @@ const Search = () => {
           {/* No results state */}
           {showNoResults && (
             <View className='flex-1 items-center justify-center px-8'>
-              <View className='w-24 h-24 rounded-full bg-gray-100 dark:bg-gray-800 items-center justify-center mb-4'>
-                <Ionicons name="search-outline" size={48} color="#9ca3af" />
-              </View>
-              <Text className='text-xl font-semibold text-gray-900 dark:text-white mb-2 text-center'>
-                No recipes found
-              </Text>
-              <Text className='text-base text-gray-500 dark:text-gray-400 text-center'>
-                Try searching with different keywords or check your spelling
-              </Text>
+              <NotFound />
+              <Text className='text-gray-500 dark:text-gray-400 mt-4 text-base' > No results found</Text>
             </View>
           )}
         </View>
@@ -100,7 +91,7 @@ const Search = () => {
         <View className='flex-1 bg-white dark:bg-black '>
           {popular === undefined ? (
             <View className='flex-1 items-center justify-center'>
-              <ActivityIndicator size="large" color="#3b82f6" />
+              <Loading />
               <Text className='text-gray-500 dark:text-gray-400 mt-4 text-base'>
                 Loading recipes...
               </Text>

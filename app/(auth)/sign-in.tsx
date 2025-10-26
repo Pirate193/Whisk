@@ -51,9 +51,10 @@ export default function Page() {
 
   return (
      <KeyboardAvoidingView
-        className='p-4 bg-white dark:bg-black flex-1 '
+             style={{ flex: 1 }}
+        className='p-4 bg-white dark:bg-black '
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={60}
+       
         >
         <ScrollView showsVerticalScrollIndicator={false}  className='flex-1' >
         
@@ -126,7 +127,8 @@ export default function Page() {
           <Text className='font-bold'> Continue</Text>
         </TouchableOpacity>
          <Text className='text-center mt-4 dark:text-white'> or</Text>  
-          <TouchableOpacity className='flex  justify-center items-center bg-gray-200 h-14 rounded-2xl mt-4' >
+          <TouchableOpacity className='flex-row gap-2  justify-center items-center bg-gray-200 h-14 rounded-2xl mt-4' >
+              <Ionicons name='logo-google' size={24}  />
              <Text className='text-center  font-bold' >Sign in with Google</Text>
           </TouchableOpacity>
           <View className='flex justify-center items-center' >

@@ -1,5 +1,6 @@
 import AiModal from "@/components/Aimodal";
 import NutritionRings from "@/components/NutritionRings";
+import Loading from "@/components/ui/loading";
 import { api } from "@/convex/_generated/api";
 import { useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
@@ -34,6 +35,14 @@ export default function Home() {
     };
     return today.toLocaleDateString("en-US", options);
   };
+  if( !todaysMeals || !todaysNutrition){
+    return(
+        <View>
+          <Loading />
+        </View>
+    )
+  }
+
   return (
     <ScrollView
       className="flex-1   bg-white dark:bg-black  relative"

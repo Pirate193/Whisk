@@ -5,19 +5,21 @@ import { FlashList } from '@shopify/flash-list';
 import { useQuery } from 'convex/react';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import AddCollection from './addCollection';
+import Loading from './ui/loading';
 
 const Collections = () => {
   const [openModal, setOpenModal] = useState(false);
   const {userId} = useAuth();
   const [loading,setLoading] = useState(false);
   const collections = useQuery(api.favourites.getcollections,{userId:userId!});
+ 
   return (
     <View className='flex-1 relative' >
       {collections === undefined ? (
         <View className='flex-1 justify-center items-center' >
-          <ActivityIndicator size='large' color='yellow' />
+          <Loading />
         </View>
       ):(
         <FlashList

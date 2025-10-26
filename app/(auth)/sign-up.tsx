@@ -80,16 +80,16 @@ export default function SignUpScreen() {
 
   if (pendingVerification) {
     return (
-      <View className='p-4 bg-white flex-1 items-center ' >
-        <Text className='text-2xl font-bold' >Verify your email</Text>
+      <View className='p-4 bg-white flex-1 items-center dark:bg-black ' >
+        <Text className='text-2xl font-bold dark:text-white ' >Verify your email</Text>
         <TextInput
           value={code}
           placeholder="Enter your verification code"
           onChangeText={(code) => setCode(code)}
-          className=' p-4 rounded-2xl mt-2 mb-2 bg-gray-200 h-14 w-full'
+          className=' p-4 rounded-2xl mt-2 mb-2 bg-gray-200 dark:bg-secondary-dark h-14 w-full'
         />
         <TouchableOpacity onPress={onVerifyPress} className='flex justify-center items-center bg-yellow-300 h-14 w-full rounded-2xl mt-4' >
-          <Text>Verify</Text>
+          <Text className='text-black' >Verify</Text>
         </TouchableOpacity>
       </View>
     )
@@ -97,9 +97,10 @@ export default function SignUpScreen() {
 
   return (
     <KeyboardAvoidingView
-    className='p-4 bg-white flex-1 dark:bg-black'
+    style={{ flex: 1 }}
+    className='p-4 bg-white dark:bg-black'
     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    keyboardVerticalOffset={60}
+
     >
     <ScrollView showsVerticalScrollIndicator={false} className='flex-1' >
     

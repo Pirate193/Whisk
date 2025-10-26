@@ -58,7 +58,8 @@ const AddCollection = ({open, onOpen}:Props) => {
     closeOnBackdropPress={true}
     >
          <KeyboardAvoidingView  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }} >
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={60} >
           <View className="flex-row items-center justify-between px-6 py-2 border-b border-gray-200 dark:border-gray-800">
             <View>
               <Text className="text-2xl font-bold text-gray-900 dark:text-white">

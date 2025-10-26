@@ -1,15 +1,17 @@
 
 import RecipeCard from '@/components/RecipeCard';
+import AlertDialog from '@/components/ui/Alert';
+import Loading from '@/components/ui/loading';
+import NotFound from '@/components/ui/notFound';
 import { api } from '@/convex/_generated/api';
 import { Id } from '@/convex/_generated/dataModel';
+import { useToast } from '@/providers/toastProvider';
 import { Ionicons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import { useMutation, useQuery } from 'convex/react';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
   Text,
   TouchableOpacity,
   View
@@ -26,37 +28,35 @@ export default function CollectionDetailPage() {
   
   const [showAddModal, setShowAddModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [RecipeTodelete, setRecipeTodelete] = useState<Id<'recipes'> | null>();
+  const {success,error}=useToast();
 
+  
+ 
   // Get recipes that are in this collection
   const collectionRecipes = collection?.recipeIds
     .map((id) => allRecipes?.find((r) => r._id === id))
     .filter(Boolean);
 
-  // Handle remove recipe
-  const handleRemoveRecipe = (recipeId: Id<'recipes'>, title: string) => {
-    Alert.alert(
-      'Remove Recipe',
-      `Remove "${title}" from this collection?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Remove',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await removeRecipe({
+
+  const recipetodelete = collectionRecipes?.find((recipe)=> recipe?._id===RecipeTodelete) // this functon is used to get the recipe we are deleteing inorder to show in the alertdialog which will look good
+    // Handle remove recipe
+  const handleRemoveRecipe = async () => {
+      if (!collectionId || !RecipeTodelete) {
+        return;
+      }
+     try{
+      await removeRecipe({
                 userId: collection!.userId,
                 collectionId: collectionId as Id<'collections'>,
-                recipeId,
+                recipeId:RecipeTodelete as Id<'recipes'>
               });
-            } catch (error) {
-              console.error('Error removing recipe:', error);
-              Alert.alert('Error', 'Failed to remove recipe');
+              success('Success','Recipe removed from collection');
+            } catch (err) {
+              console.error('Error removing recipe:', err);
+              error('Error','Something went wrong. Please try again.');
             }
-          },
-        },
-      ]
-    );
   };
 
   return (
@@ -102,14 +102,12 @@ export default function CollectionDetailPage() {
       {/* Content */}
       {collection === undefined ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#3b82f6" />
+          <Loading />
           <Text className="text-gray-500 dark:text-gray-400 mt-4">Loading collection...</Text>
         </View>
       ) : collection?.recipeIds.length === 0 ? (
         <View className="flex-1 items-center justify-center px-8  ">
-          <View className="w-24 h-24 rounded-full bg-gray-100 dark:bg-gray-800 items-center justify-center mb-4">
-            <Ionicons name="restaurant-outline" size={48} color="#9ca3af" />
-          </View>
+           <NotFound />
           <Text className="text-xl font-semibold text-gray-900 dark:text-white mb-2 text-center">
             No Recipes Yet
           </Text>
@@ -137,7 +135,10 @@ export default function CollectionDetailPage() {
                   />
                   {/* Remove button */}
                   <TouchableOpacity
-                    onPress={() => handleRemoveRecipe(item._id, item.title)}
+                    onPress={() =>{
+                      setRecipeTodelete(item._id);
+                      setAlertVisible(true);
+                    }}
                     className="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-500 items-center justify-center"
                     style={{
                       shadowColor: '#000',
@@ -158,7 +159,19 @@ export default function CollectionDetailPage() {
           />
         </View>
       )}
-
+      { collectionRecipes &&(
+      <AlertDialog 
+      visible={alertVisible}
+      onClose={()=>setAlertVisible(false)}
+      title='Remove Recipe'
+      description={`Are you sure you want to delete ${recipetodelete?.title} from this collection?`}
+       cancelText="Cancel"
+      confirmText="Delete"
+      variant="destructive"
+      onConfirm={handleRemoveRecipe}
+     />
+      )
+      }
     </View>
   );
 }

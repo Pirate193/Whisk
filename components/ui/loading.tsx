@@ -1,10 +1,16 @@
-import React from 'react'
-import { Text, View } from 'react-native'
+import LottieView from 'lottie-react-native';
+import React from 'react';
+import { View } from 'react-native';
 
 const Loading = () => {
   return (
     <View>
-      <Text>Loading</Text>
+     <LottieView
+     source={require('../../assets/animations/food loading animation .json')}
+     autoPlay
+     loop
+     style={{width:200,height:200}}
+     />
     </View>
   )
 }

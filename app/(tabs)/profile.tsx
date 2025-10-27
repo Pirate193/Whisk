@@ -39,8 +39,9 @@ const Profile = () => {
     <View className='flex-1 bg-background-light dark:bg-background-dark' >
       <View className='flex-row mt-4 gap-4 items-center mx-2' >
         <View>
+
           <Image
-          source={user?.imageurl || "https://via.placeholder.com/120"}
+          source={user?.imageurl || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'}
           style={{width:100,height:100,borderRadius:50}}
           />
         </View>

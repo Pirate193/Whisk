@@ -87,7 +87,7 @@ export default function SignUpScreen() {
           value={code}
           placeholder="Enter your verification code"
           onChangeText={(code) => setCode(code)}
-          className=' p-4 rounded-2xl mt-2 mb-2 bg-gray-200 dark:bg-secondary-dark h-14 w-full'
+          className=' p-4 rounded-2xl mt-2 mb-2 dark:text-white bg-gray-200 dark:bg-secondary-dark h-14 w-full'
         />
         <TouchableOpacity onPress={onVerifyPress} className='flex justify-center items-center bg-yellow-300 h-14 w-full rounded-2xl mt-4' >
           <Text className='text-black' >Verify</Text>

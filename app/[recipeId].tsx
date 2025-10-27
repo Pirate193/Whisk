@@ -128,6 +128,9 @@ export default function RecipePage() {
            totalTime={recipe?.totalTime}
            servings={recipe?.servings}
            nutritions={recipe?.nutrition}
+           MealType={recipe.mealType}
+           CuisineType={recipe.cuisineType}
+           dietaryTags={recipe.dietaryTags}
            />
            </ScrollView>
         ) 

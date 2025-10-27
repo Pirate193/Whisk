@@ -3,9 +3,10 @@ import { useAuth } from '@clerk/clerk-expo'
 import { FlashList } from "@shopify/flash-list"
 import { useQuery } from 'convex/react'
 import React from 'react'
-import { View } from 'react-native'
+import { Text, View } from 'react-native'
 import RecipeCard from './RecipeCard'
 import Loading from './ui/loading'
+import NotFound from './ui/notFound'
 
 
 export default function Favourites() {
@@ -20,8 +21,12 @@ export default function Favourites() {
       )
     }
   return (
-    <View className='flex-1 ' >
-     
+    <View className='flex-1 pt-2 ' >
+      {favourites.length === 0 && (
+        <View className='flex-1 justify-center items-center' >
+          <NotFound />
+          <Text className='text-2xl font-bold dark:text-white' >No favourites Found  </Text>
+          </View>)}
       <FlashList 
       data={favourites}
       keyExtractor={(item)=>item._id}
@@ -31,6 +36,7 @@ export default function Favourites() {
       )}
       numColumns={2}
       masonry
+      showsVerticalScrollIndicator={false}
       />
       <View className='h-20' />
     </View>

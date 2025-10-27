@@ -6,7 +6,7 @@ export default defineSchema({
         email: v.string(),
         username: v.string(),
         avatarUrl:v.optional(v.string()),
-
+        avatarId:v.optional(v.id('_storage')),
         //dietary info
         dietaryPreferences: v.array(v.string()),
         allergies: v.array(v.string()),
@@ -30,7 +30,7 @@ export default defineSchema({
             ),
             targetWeight:v.optional(v.number()),
             currentWeight:v.optional(v.number()),
-            gender:v.optional(v.union(v.literal('male'),v.literal('famale'))),
+            gender:v.optional(v.union(v.literal('male'),v.literal('female'))),
             age:v.optional(v.number())
         })),
         //nutrition Targets

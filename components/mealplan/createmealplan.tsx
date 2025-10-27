@@ -1,10 +1,13 @@
 import { api } from '@/convex/_generated/api';
+import { useToast } from '@/providers/toastProvider';
 import { useAuth } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useMutation } from 'convex/react';
 import React, { useState } from 'react';
-import { ActivityIndicator, Alert, Modal, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import SwipeableModal from '../ui/SwipableModal';
 
 interface Props {
   open: boolean;
@@ -24,6 +27,7 @@ const CreateMealPlan = ({ open, onOpen }: Props) => {
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ title?: string; dates?: string }>({});
+  const {success,error}=useToast();
 
   // Format date for display
   const formatDate = (date: Date) => {
@@ -108,11 +112,11 @@ const CreateMealPlan = ({ open, onOpen }: Props) => {
       });
       
       // Success - close modal and reset
-      Alert.alert('Success', 'Meal plan created successfully!');
+      success('Success', 'Meal plan created successfully!');
       handleClose();
-    } catch (error) {
-      console.error('Error creating meal plan:', error);
-      Alert.alert('Error', 'Failed to create meal plan. Please try again.');
+    } catch (err) {
+      console.error('Error creating meal plan:', err);
+      error('Error', 'Failed to create meal plan. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -136,17 +140,13 @@ const CreateMealPlan = ({ open, onOpen }: Props) => {
   };
 
   return (
-    <Modal
-      animationType="slide"
-      visible={open}
-      onRequestClose={handleClose}
-      transparent
-    >
-      <View className="flex-1 justify-end bg-black/50">
-        <View 
-          style={{ height: '85%' }} 
-          className="rounded-t-3xl bg-white dark:bg-black"
-        >
+   <SwipeableModal
+   visible={open}
+   onClose={handleClose}
+   height='80%'
+   showHandle={true}
+   closeOnBackdropPress={true}
+   >
           {/* Header */}
           <View className="flex-row items-center justify-between px-6 py-4 ">
             <View>
@@ -165,10 +165,10 @@ const CreateMealPlan = ({ open, onOpen }: Props) => {
             </TouchableOpacity>
           </View>
 
-          <ScrollView 
-            className="flex-1 px-6 py-4"
-            showsVerticalScrollIndicator={false}
-          >
+        
+            <KeyboardAwareScrollView   className="flex-1 px-6 py-4"
+            bottomOffset={40} 
+            showsVerticalScrollIndicator={false}>
             {/* Title Input */}
             <View className="mb-6">
               <Text className="text-base font-semibold text-gray-900 dark:text-white mb-2">
@@ -307,7 +307,8 @@ const CreateMealPlan = ({ open, onOpen }: Props) => {
                 </Text>
               </View>
             </View>
-          </ScrollView>
+            </KeyboardAwareScrollView>
+        
 
           {/* Footer Buttons */}
           <View className="px-6 py-4 ">
@@ -329,9 +330,7 @@ const CreateMealPlan = ({ open, onOpen }: Props) => {
               )}
             </TouchableOpacity>
           </View>
-        </View>
-      </View>
-    </Modal>
+       </SwipeableModal>
   );
 };
 

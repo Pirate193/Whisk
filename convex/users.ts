@@ -25,7 +25,7 @@ export const createUser = internalMutation({
         userId:v.string(),
         email: v.string(),
         username: v.string(),
-        avatarUrl:v.optional(v.string()),
+        avatarId:v.optional(v.id('_storage')),
 
         //dietary info
         dietaryPreferences: v.array(v.string()),
@@ -82,16 +82,18 @@ export const createUser = internalMutation({
 export const getUser = query({
     args:{userId:v.string()},
     handler: async (ctx,args)=>{
-        return await ctx.db.query('userProfiles').withIndex('by_userId',(q)=>q.eq('userId',args.userId)).first();
+        const user =await ctx.db.query('userProfiles').withIndex('by_userId',(q)=>q.eq('userId',args.userId)).first();
+        const imageurl = await ctx.storage.getUrl(user?.avatarId!);
+        return {...user,imageurl};
     }
 })
 
 export const updateProfile = mutation({
     args:{
         userId:v.string(),
-        email: v.string(),
+
         username: v.optional(v.string()),
-        avatarUrl:v.optional(v.string()),
+        avatarId:v.optional(v.id('_storage')),
 
         //dietary info
         dietaryPreferences: v.optional(v.array(v.string())),
@@ -116,7 +118,7 @@ export const updateProfile = mutation({
             ),
             targetWeight:v.optional(v.number()),
             currentWeight:v.optional(v.number()),
-            gender:v.optional(v.union(v.literal('male'),v.literal('famale'))),
+            gender:v.optional(v.union(v.literal('male'),v.literal('female'))),
             age:v.optional(v.number())
         })),
         //nutrition Targets
@@ -141,7 +143,7 @@ export const updateProfile = mutation({
         
         const updated = await ctx.db.patch(user._id,{
             username:args.username,
-            avatarUrl:args.avatarUrl,
+            avatarId:args.avatarId,
             dietaryPreferences:args.dietaryPreferences,
             allergies:args.allergies,
             dislikes:args.dislikes,

@@ -1,20 +1,20 @@
 import RecipeCard from '@/components/RecipeCard';
 import { api } from '@/convex/_generated/api';
 import { Id } from '@/convex/_generated/dataModel';
+import { useToast } from '@/providers/toastProvider';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useMutation, useQuery } from 'convex/react';
 import React, { useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    Modal,
-    Platform,
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  Modal,
+  Platform,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import ChooseRecipe from './ChooseRecipe';
 
@@ -47,6 +47,7 @@ const AddRecipeToMealPlan = ({
   const [showRecipeModal, setShowRecipeModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ recipe?: string; date?: string }>({});
+  const{success,error}=useToast();
 
   // Meal types configuration
   const mealTypes: { type: MealType; icon: string; label: string }[] = [
@@ -131,11 +132,11 @@ const AddRecipeToMealPlan = ({
         }
       });
       
-      Alert.alert('Success', 'Recipe added to meal plan!');
+      success('Recipe added to meal plan successfully');
       handleClose();
-    } catch (error) {
-      console.error('Error adding recipe:', error);
-      Alert.alert('Error', 'Failed to add recipe. Please try again.');
+    } catch (err) {
+      console.error('Error adding recipe:', err);
+      error('Failed to add recipe to meal plan. Please try again.');
     } finally {
       setIsLoading(false);
     }

@@ -4,10 +4,27 @@ import { useAuth } from '@clerk/clerk-expo';
 import { useThreadMessages } from "@convex-dev/agent/react";
 import { Ionicons } from '@expo/vector-icons';
 import { useAction, useMutation } from 'convex/react';
+import LottieView from 'lottie-react-native';
 import React, { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, FlatList, Modal, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useKeyboardHandler } from 'react-native-keyboard-controller';
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import Message from './message';
+import SwipeableModal from './ui/SwipableModal';
+const useGradualAnimation = () => {
+  const height = useSharedValue(0);
 
+  useKeyboardHandler(
+    {
+      onMove: event => {
+        'worklet';
+        height.value = Math.max(event.height, 0);
+      },
+    },
+    []
+  );
+  return { height };
+};
 interface contextProps{
   recipeId?: Id<"recipes">;
   recipeData?: {
@@ -86,42 +103,39 @@ const AiModal = ({recipeId,recipeData}:contextProps) => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
-
+     const { height } = useGradualAnimation();
+   
+     const fakeView = useAnimatedStyle(() => {
+       return {
+         height: Math.abs(height.value),
+       };
+  }, []);
   return (
     <>
       {/* Floating AI Button */}
-      <View className='absolute bottom-24 right-4 z-50'>
+      <View className='absolute bottom-20 right-4 z-50'>
         <TouchableOpacity 
           onPress={() => setShowModal(true)} 
-          className=' rounded-full p-4 shadow-lg bg-black'
+          className=' rounded-full '
         >
-          <Ionicons name='sparkles' size={24} color="white" />
+          <LottieView
+          source={require('../assets/animations/Loading loop animation.json')}
+          style={{width:80,height:80}} 
+          autoPlay
+          loop
+          />
         </TouchableOpacity>
       </View>
 
       {/* Modal */}
-      <Modal
-        visible={showModal}
-        animationType='slide'
-        onRequestClose={handleCloseModal}
-        transparent
-      >
-         <View className='flex-1 justify-end bg-black/50' >
-          <View  style={{height:'90%',marginTop:'auto'}}  className='rounded-t-3xl dark:bg-black bg-white'>
-          {/* Header */}
-          {/* <View className='bg-white dark:bg-secondary-dark pt-2 pb-4 px-4 flex-row items-center justify-between shadow-sm'>
-            <View className='flex-row items-center'>
-              <View className='w-10 h-10 rounded-full bg-black items-center justify-center mr-3'>
-                <Ionicons name='sparkles' size={20} color='white' />
-              </View>
-              <Text className='text-xl font-bold text-gray-900 dark:text-white'>
-                AI Assistant
-              </Text>
-            </View>
-            <TouchableOpacity onPress={handleCloseModal}>
-              <Ionicons name='close' size={28} color='#6b7280' />
-            </TouchableOpacity>
-          </View> */}
+     <SwipeableModal
+     visible={showModal}
+     onClose={handleCloseModal}
+     height='95%'
+     showHandle={true}
+     closeOnBackdropPress={true}
+     >
+    
 
           {/* Messages */}
           {!threadId ? (
@@ -195,9 +209,8 @@ const AiModal = ({recipeId,recipeData}:contextProps) => {
               </TouchableOpacity>
             </View>
           </View>
-          </View>
-          </View>
-      </Modal>
+           <Animated.View style={fakeView} />
+       </SwipeableModal>
     </>
   );
 };

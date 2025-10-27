@@ -3,10 +3,26 @@ import { useToast } from '@/providers/toastProvider';
 import { useAuth } from '@clerk/clerk-expo';
 import { useMutation } from 'convex/react';
 import React, { useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
+import { KeyboardAwareScrollView, useKeyboardHandler } from 'react-native-keyboard-controller';
+import { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import SwipeableModal from './ui/SwipableModal';
 
+const useGradualAnimation = () => {
+  const height = useSharedValue(0);
+
+  useKeyboardHandler(
+    {
+      onMove: event => {
+        'worklet';
+        height.value = Math.max(event.height, 0);
+      },
+    },
+    []
+  );
+  return { height };
+};
 interface Props{
     open:boolean;
     onOpen: (open: boolean) => void
@@ -49,17 +65,22 @@ const AddCollection = ({open, onOpen}:Props) => {
             error('Error','Something went wrong. Please try again.');
         }
     }
+  const { height } = useGradualAnimation();
+
+  const fakeView = useAnimatedStyle(() => {
+    return {
+      height: Math.abs(height.value),
+    };
+  }, []);
   return (
     <SwipeableModal
     visible={open}
     onClose={()=>onOpen(false)}
-    height='75%'
+    height='90%'
     showHandle={true}
     closeOnBackdropPress={true}
     >
-         <KeyboardAvoidingView  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
-        keyboardVerticalOffset={60} >
+ 
           <View className="flex-row items-center justify-between px-6 py-2 border-b border-gray-200 dark:border-gray-800">
             <View>
               <Text className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -72,7 +93,7 @@ const AddCollection = ({open, onOpen}:Props) => {
            
           </View>
             
-          <ScrollView className="flex-1 px-6 py-4" showsVerticalScrollIndicator={false}>
+          <KeyboardAwareScrollView bottomOffset={40} className="flex-1 px-6 py-4" >
             {/* Emoji Selection */}
             <View className="mb-6">
               <Text className="text-base font-semibold text-gray-900 dark:text-white mb-3">
@@ -112,7 +133,7 @@ const AddCollection = ({open, onOpen}:Props) => {
                 {name.length}/50 characters
               </Text>
             </View>
-
+          
             {/* Description Input */}
             <View className="mb-6">
               <Text className="text-base font-semibold text-gray-900 dark:text-white mb-2">
@@ -133,8 +154,9 @@ const AddCollection = ({open, onOpen}:Props) => {
                 {description.length}/200 characters
               </Text>
             </View>
-          </ScrollView>
-
+          
+             </KeyboardAwareScrollView>
+        
           {/* Footer */}
           <View className="px-6 py-4 border-t border-gray-200 dark:border-gray-800">
             <TouchableOpacity
@@ -151,7 +173,7 @@ const AddCollection = ({open, onOpen}:Props) => {
               )}
             </TouchableOpacity>
           </View>
-        </KeyboardAvoidingView>
+ 
     </SwipeableModal>
   )
 }

@@ -62,7 +62,6 @@ http.route({
         userId,
         email: email_address,
         username,
-        avatarUrl,
         dietaryPreferences: [],
         allergies: [],
         dislikes: [],

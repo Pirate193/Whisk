@@ -8,6 +8,7 @@ import React, { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import AddCollection from './addCollection';
 import Loading from './ui/loading';
+import NotFound from './ui/notFound';
 
 const Collections = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -42,6 +43,11 @@ const Collections = () => {
         )}
         />
       )}
+      {collections?.length === 0 &&(
+        <View className='flex-1 justify-center items-center' >
+        <NotFound />
+        <Text className='text-2xl font-bold dark:text-white' >No Collections Found</Text>
+      </View>)}
       <TouchableOpacity onPress={() => setOpenModal(true)}
       className='bg-black p-4 flex justify-center items-center absolute h-14 w-14 rounded-full
       bottom-24 right-8 dark:bg-secondary-dark '  >

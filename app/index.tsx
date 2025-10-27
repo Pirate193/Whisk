@@ -2,30 +2,33 @@ import { useTheme } from '@/providers/themeProvider';
 import { useAuth } from '@clerk/clerk-expo';
 import { Image } from 'expo-image';
 import { Link, Redirect } from 'expo-router';
-import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect } from 'react';
+
+import LottieView from "lottie-react-native";
+import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
-SplashScreen.preventAutoHideAsync();
-SplashScreen.setOptions({
-  duration:4000,
-  fade:true,
-})
+
 const Index = () => {
    const { isSignedIn,isLoaded } = useAuth();
    const {colorScheme}=useTheme();
- 
 
-   useEffect(() => {
-     if (isLoaded){
-      SplashScreen.hideAsync();
-     }
-   }, [isLoaded])
-   
   if (isSignedIn) {
     return <Redirect href={'/(tabs)/home'} />
   }
 
+  if(!isLoaded){
+      return (
+          <View className='bg-white  dark:bg-black flex-1 justify-center items-center' >
+              <LottieView
+                  source={require('../assets/animations/Food prep.json')}
+                  autoPlay={true}
+                  loop={true}
+                  style={{height:240,width:240}}
+              />
+              <Text className='text-gray-400 dark:text-gray-400' >Loading The best Recipe app .. </Text>
+          </View>
+      )
+  }
   return (
    <View className="flex-1 bg-white dark:bg-black">
       {/* Header Image */}

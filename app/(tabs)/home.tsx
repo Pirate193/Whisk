@@ -9,6 +9,7 @@ import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "convex/react";
 import { Image } from "expo-image";
 import { router } from "expo-router";
+import LottieView from "lottie-react-native";
 import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function Home() {
@@ -37,15 +38,16 @@ export default function Home() {
   };
   if( !todaysMeals || !todaysNutrition){
     return(
-        <View>
+        <View className="flex-1 justify-center items-center bg-white dark:bg-black" >
           <Loading />
         </View>
     )
   }
 
   return (
+    <View className="flex-1 bg-white dark:bg-black relative">
     <ScrollView
-      className="flex-1   bg-white dark:bg-black  relative"
+      className="flex-1  "
       showsVerticalScrollIndicator={false}
     >
       {/* header  */}
@@ -84,11 +86,19 @@ export default function Home() {
       <Text className="text-xl ml-2 font-bold text-gray-900 dark:text-white">
         Todays Meal
       </Text>
-      {todaysMeals === undefined && (
-        <View className="flex-1 items-center justify-center" >
-          <ActivityIndicator size='large' color='yellow' />
-        </View>
-      )}
+        {todaysMeals.length === 0 && (
+            <View className='flex items-center'>
+                <LottieView
+                source={require('../../assets/animations/empty.json')}
+                autoPlay={true}
+                loop={true}
+                style={{height:100,width:100}}
+                />
+                <Text className='dark:text-secondary-light text-center text-sm '>Looks like you havent
+                    add meals today begin by adding meals to mealplan</Text>
+            </View>
+        )}
+
       {todaysMeals && todaysMeals.length > 0 && (
         <ScrollView
           horizontal={true}
@@ -212,8 +222,10 @@ export default function Home() {
       </View>
       {/* bottom spacing */}
       <View className="h-24" />
-      <AiModal />
+     
     </ScrollView>
+     <AiModal />
+    </View>
   );
 }
 

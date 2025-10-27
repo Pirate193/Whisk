@@ -4,7 +4,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import * as React from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp()
@@ -96,13 +97,10 @@ export default function SignUpScreen() {
   }
 
   return (
-    <KeyboardAvoidingView
-    style={{ flex: 1 }}
-    className='p-4 bg-white dark:bg-black'
-    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-
-    >
-    <ScrollView showsVerticalScrollIndicator={false} className='flex-1' >
+    
+   <KeyboardAwareScrollView
+     bottomOffset={40} className='flex-1 bg-white dark:bg-black p-4'
+     >
     
           <View className='flex ' >
             {colorScheme === 'dark' ?(
@@ -200,7 +198,6 @@ export default function SignUpScreen() {
                 <Text className='text-center mt-4 dark:text-white ' >Already have an account? <Text className='font-bold text-blue-600' onPress={()=> router.push('/sign-in')} >Sign In</Text> </Text>
               </View>
           </View>
-        </ScrollView>
-        </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
   )
 }

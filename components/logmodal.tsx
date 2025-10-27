@@ -48,7 +48,7 @@ const LogModal = ({ recipeId, nutrition, open, onOpen }: LogMealButtonProps) => 
       if (!permission.granted) return;
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: ["images"],
-        quality: 0.7,
+        quality: 0.3,
       });
       if (!result.canceled && result.assets) {
         setPhoto(result.assets[0].uri);
@@ -56,12 +56,13 @@ const LogModal = ({ recipeId, nutrition, open, onOpen }: LogMealButtonProps) => 
     };
 
   const handleMealLog = async () => {
+   
     try {
-      if (!photo) {
-        console.log("no photo detected");
-      }
-        const postUrl = await generateUrl();
-        const response = await fetch(photo!);
+        let storageId = undefined;
+           if (photo) {
+      
+         const postUrl = await generateUrl();
+        const response = await fetch(photo);
         const blob = await response.blob();
 
         const uploadResponse = await fetch(postUrl, {
@@ -70,7 +71,11 @@ const LogModal = ({ recipeId, nutrition, open, onOpen }: LogMealButtonProps) => 
           body: blob,
         });
 
-      const { storageId } = await uploadResponse.json();
+      const { storage } = await uploadResponse.json();
+
+       storageId = storage;
+      }
+       
       await logMeal({
         userId: userId as string,
         recipeId: recipeId as Id<"recipes">,
@@ -85,7 +90,7 @@ const LogModal = ({ recipeId, nutrition, open, onOpen }: LogMealButtonProps) => 
         },
         notes: notes || undefined,
         rating: rating > 0 ? rating : undefined,
-        photoUrl: storageId,
+        photoUrl:storageId,
       });
       onOpen(false)
       success('Success!', 'Meal logged successfully.');
@@ -104,7 +109,7 @@ const LogModal = ({ recipeId, nutrition, open, onOpen }: LogMealButtonProps) => 
     closeOnBackdropPress={true}
     >
         <View className="mb-4">
-          <Text className="text-lg font-semibold dark:text-white mb-2">
+          <Text className="text-lg font-semibold dark:text-white mb-2 ml-2">
             Meal Type:
           </Text>
           <View className="flex-row justify-around">
@@ -162,12 +167,12 @@ const LogModal = ({ recipeId, nutrition, open, onOpen }: LogMealButtonProps) => 
             </TouchableOpacity>
           </View>
           {/* notes */}
-          <View>
+          <View className="mx-2" >
             <Text className="text-lg font-semibold dark:text-white mb-2">
               Notes:
             </Text>
             <TextInput
-              className="border border-gray-300 dark:border-zinc-600 rounded-lg p-3 dark:text-white"
+              className="border  border-gray-300 dark:border-zinc-600 rounded-lg p-3 dark:text-white"
               placeholder="Add some notes about your meal..."
               placeholderTextColor="gray"
               value={notes}

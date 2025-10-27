@@ -2,8 +2,10 @@ import { api } from '@/convex/_generated/api';
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from 'convex/react';
 import React, { useState } from 'react';
-import { Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import FilteredResults from './filteredResults';
+import SwipeableModal from './ui/SwipableModal';
 
 interface Props {
   open: boolean;
@@ -127,15 +129,13 @@ const FilterSearch = ({ open, onOpen }: Props) => {
 
   return (
     <>
-      {/* Filter Modal */}
-      <Modal
-        visible={open && !showResults}
-        animationType="slide"
-        onRequestClose={handleClose}
-        transparent
-      >
-        <View className="flex-1 justify-end bg-black/50">
-          <View style={{ height: '95%' }} className="rounded-t-3xl bg-white dark:bg-black">
+   <SwipeableModal
+   visible={open}
+   onClose={()=>onOpen(false)}
+   height='90%'
+   showHandle={true}
+   closeOnBackdropPress={true}
+   >
             {/* Header */}
             <View className="flex-row items-center justify-between px-6 py-2">
               <View>
@@ -151,7 +151,9 @@ const FilterSearch = ({ open, onOpen }: Props) => {
               </TouchableOpacity>
             </View>
 
-            <ScrollView className="flex-1 px-6 py-4" showsVerticalScrollIndicator={false}>
+          <KeyboardAwareScrollView className="flex-1 px-6 py-4" 
+          bottomOffset={20} showsVerticalScrollIndicator={false} >
+       
               {/* Meal Type */}
               <View className="mb-6">
                 <Text className="text-base font-semibold text-gray-900 dark:text-white mb-3">
@@ -381,7 +383,8 @@ const FilterSearch = ({ open, onOpen }: Props) => {
                   ))}
                 </View>
               </View>
-            </ScrollView>
+              </KeyboardAwareScrollView>
+        
 
             {/* Footer Buttons */}
             <View className="px-6 py-4 border-t border-gray-200 dark:border-gray-800 flex-row gap-3">
@@ -399,9 +402,7 @@ const FilterSearch = ({ open, onOpen }: Props) => {
               </TouchableOpacity>
             </View>
            
-          </View>
-        </View>
-      </Modal>
+      </SwipeableModal>
      
       <FilteredResults filteredRecipes={filteredRecipes!} showResults={showResults}
             setShowResults={setShowResults} />

@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Loading from './ui/loading';
+import NotFound from './ui/notFound';
 
 const LogsComponent = () => {
   const { userId } = useAuth();
@@ -236,6 +237,7 @@ const LogsComponent = () => {
 
       {/* Content */}
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+
         {logs === undefined ? (
           <View className="flex-1 items-center justify-center py-20">
             <Loading />
@@ -249,9 +251,7 @@ const LogsComponent = () => {
           groupedLogs.older.length === 0
         ) ? (
           <View className="flex-1 items-center justify-center py-20 px-8">
-            <View className="w-24 h-24 rounded-full bg-gray-100 dark:bg-gray-800 items-center justify-center mb-4">
-              <Ionicons name="calendar-outline" size={48} color="#9ca3af" />
-            </View>
+              <NotFound />
             <Text className="text-xl font-semibold text-gray-900 dark:text-white mb-2 text-center">
               No Logs Yet
             </Text> 

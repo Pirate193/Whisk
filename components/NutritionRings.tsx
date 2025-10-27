@@ -35,21 +35,21 @@ export default function NutritionRings({nutrition}:Props) {
         {...commonProps}
         value={fatPercentage}
         radius={75}
-        activeStrokeColor='#FF6B6B'
+        activeStrokeColor='#e01616'
         inActiveStrokeColor='#FF6B6B'
         >
          <CircularProgressBase
          {...commonProps}
          value={carbsPercentage}
          radius={50}
-         activeStrokeColor="#FFD93D"
-          inActiveStrokeColor="#FFD93D"
+         activeStrokeColor="#b500c9"
+          inActiveStrokeColor="#b161c7"
          >
          <CircularProgressBase
           {...commonProps}
             value={proteinPercentage}
             radius={25}
-            activeStrokeColor="#6BCB77"
+            activeStrokeColor="#02e324"
             inActiveStrokeColor="#6BCB77"
          >
            {/* <View className="items-center">

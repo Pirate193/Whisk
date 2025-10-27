@@ -7,6 +7,7 @@ import { useMutation, useQuery } from 'convex/react';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 import SwipeableModal from './ui/SwipableModal';
+import Loading from "@/components/ui/loading";
 
 interface Props{
     open:boolean;
@@ -43,14 +44,15 @@ const ListCollectionModal = ({open, onOpen,recipeId}:Props) => {
     <SwipeableModal
     visible={open}
     onClose={() => onOpen(false)}
-    height='40%'
+    height='50%'
     showHandle={true}
     closeOnBackdropPress={true}
     >
          <View className='flex-1' >
+             <Text className='text-lg dark:text-white ml-2' >PIck a collection to Add this recipe to </Text>
             {collections === undefined ? (
         <View className='flex-1 justify-center items-center' >
-          <ActivityIndicator size='large' color='yellow' />
+        <Loading />
         </View>
       ):(
         <FlashList

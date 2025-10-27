@@ -1,8 +1,11 @@
 import { Ionicons } from '@expo/vector-icons'
 import { FlashList } from '@shopify/flash-list'
 import React from 'react'
-import { ActivityIndicator, Modal, Text, TouchableOpacity, View } from 'react-native'
+import { Text, TouchableOpacity, View } from 'react-native'
 import RecipeCard from './RecipeCard'
+import SwipeableModal from './ui/SwipableModal'
+import Loading from './ui/loading'
+import NotFound from './ui/notFound'
 
 interface Props{
     filteredRecipes: any[];
@@ -12,16 +15,13 @@ interface Props{
 
 const FilteredResults = ({filteredRecipes, showResults, setShowResults}: Props) => {
   return (
-      <Modal
-           visible={showResults}
-           animationType="slide"
-           onRequestClose={() => setShowResults(false)}
+         <SwipeableModal
+         visible={showResults}
+         onClose={() => setShowResults(false)}
+         height="90%"
+         showHandle={true}
+         closeOnBackdropPress={true}
          >
-           <View className="flex-1 justify-end bg-black/50">
-           <View 
-           style={{ height: "100%" }}
-           className="rounded-t-3xl bg-white dark:bg-black"
-           >
              {/* Header */}
              <View className="flex-row items-center justify-between px-6 py-2 border-b border-gray-200 dark:border-gray-800">
                <View className="flex-1">
@@ -44,16 +44,14 @@ const FilteredResults = ({filteredRecipes, showResults, setShowResults}: Props) 
              <View className="flex-1 px-2 pt-4">
                {filteredRecipes === undefined ? (
                  <View className="flex-1 items-center justify-center">
-                   <ActivityIndicator size="large" color="#3b82f6" />
+                   <Loading />
                    <Text className="text-gray-500 dark:text-gray-400 mt-4">
                      Searching recipes...
                    </Text>
                  </View>
                ) : filteredRecipes.length === 0 ? (
                  <View className="flex-1 items-center justify-center px-8">
-                   <View className="w-24 h-24 rounded-full bg-gray-100 dark:bg-gray-800 items-center justify-center mb-4">
-                     <Ionicons name="search-outline" size={48} color="#9ca3af" />
-                   </View>
+                  <NotFound />
                    <Text className="text-xl font-semibold text-gray-900 dark:text-white mb-2 text-center">
                      No recipes found
                    </Text>
@@ -81,9 +79,7 @@ const FilteredResults = ({filteredRecipes, showResults, setShowResults}: Props) 
                  />
                )}
              </View>
-             </View>
-           </View>
-         </Modal>
+          </SwipeableModal>
   )
 }
 

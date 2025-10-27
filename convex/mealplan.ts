@@ -304,6 +304,6 @@ export const toggleMealPlanActive = mutation({
             isActive:!mealPlan.isActive,
             updatedAt:Date.now(),
         });
-        return args.mealPlanId
+        return mealPlan.isActive
     }
 })

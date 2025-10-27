@@ -24,7 +24,8 @@ export default function CollectionDetailPage() {
   });
   
   const removeRecipe = useMutation(api.favourites.addRecipetoCollection);
-  const allRecipes = useQuery(api.recipe.getRecipes, { limit: 100 });
+  
+
   
   const [showAddModal, setShowAddModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -35,12 +36,9 @@ export default function CollectionDetailPage() {
   
  
   // Get recipes that are in this collection
-  const collectionRecipes = collection?.recipeIds
-    .map((id) => allRecipes?.find((r) => r._id === id))
-    .filter(Boolean);
+ 
 
-
-  const recipetodelete = collectionRecipes?.find((recipe)=> recipe?._id===RecipeTodelete) // this functon is used to get the recipe we are deleteing inorder to show in the alertdialog which will look good
+  const recipetodelete = collection?.recipes.find((recipe)=> recipe?._id===RecipeTodelete) // this functon is used to get the recipe we are deleteing inorder to show in the alertdialog which will look good
     // Handle remove recipe
   const handleRemoveRecipe = async () => {
       if (!collectionId || !RecipeTodelete) {
@@ -105,7 +103,7 @@ export default function CollectionDetailPage() {
           <Loading />
           <Text className="text-gray-500 dark:text-gray-400 mt-4">Loading collection...</Text>
         </View>
-      ) : collection?.recipeIds.length === 0 ? (
+      ) : collection.recipes.length === 0 ? (
         <View className="flex-1 items-center justify-center px-8  ">
            <NotFound />
           <Text className="text-xl font-semibold text-gray-900 dark:text-white mb-2 text-center">
@@ -119,18 +117,16 @@ export default function CollectionDetailPage() {
       ) : (
         <View className="flex-1 px-2 pt-4">
           <FlashList
-            data={collectionRecipes}
-            keyExtractor={(item) => item?._id || ''}
-            renderItem={({ item }) => {
-              if (!item) return null;
-              return (
+            data={collection.recipes}
+            keyExtractor={(item)=>item._id as string}
+            renderItem={({ item }) => (
                 <View className="relative">
                   <RecipeCard
-                    id={item._id}
+                    id={item._id as Id<'recipes'>}
                     imageUrl={item.imageUrl}
-                    title={item.title}
-                    difficulty={item.difficulty}
-                    duration={item.totalTime}
+                    title={item.title!}
+                    difficulty={item.difficulty!}
+                    duration={item.totalTime!}
                     dietaryTags={item.dietaryTags}
                   />
                   {/* Remove button */}
@@ -151,15 +147,14 @@ export default function CollectionDetailPage() {
                     <Ionicons name="close" size={18} color="white" />
                   </TouchableOpacity>
                 </View>
-              );
-            }}
+              )}
             numColumns={2}
             masonry
             showsVerticalScrollIndicator={false}
           />
         </View>
       )}
-      { collectionRecipes &&(
+      { RecipeTodelete &&(
       <AlertDialog 
       visible={alertVisible}
       onClose={()=>setAlertVisible(false)}

@@ -6,8 +6,26 @@ import { useMutation } from "convex/react";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
-import { Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { KeyboardAwareScrollView, useKeyboardHandler } from "react-native-keyboard-controller";
+import SwipeableModal from "./ui/SwipableModal";
 
+import { useToast } from "@/providers/toastProvider";
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+const useGradualAnimation = () => {
+  const height = useSharedValue(0);
+
+  useKeyboardHandler(
+    {
+      onMove: event => {
+        'worklet';
+        height.value = Math.max(event.height, 0);
+      },
+    },
+    []
+  );
+  return { height };
+};
 interface Props {
   open: boolean;
   onOpen: (open: boolean) => void;
@@ -21,6 +39,7 @@ const AddReview = ({ open, onOpen, recipeId }: Props) => {
   const addreview = useMutation(api.reviews.addReview);
   const { userId } = useAuth();
   const generateUploadUrl = useMutation(api.reviews.generatePhotoUrl);
+  const {success,error}=useToast();
   const takePhoto = async () => {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
     if (!permission.granted) return;
@@ -34,9 +53,8 @@ const AddReview = ({ open, onOpen, recipeId }: Props) => {
   };
   const handleAddreview = async () => {
     try {
-      if (!photo) {
-        console.log("no photo detected");
-      } else {
+      let photoUrls = [];
+      if (photo) {
         const postUrl = await generateUploadUrl();
         const response = await fetch(photo);
         const blob = await response.blob();
@@ -48,29 +66,41 @@ const AddReview = ({ open, onOpen, recipeId }: Props) => {
         });
 
         const { storageId } = await uploadResponse.json();
-
+        photoUrls.push(storageId);
+      }
         await addreview({
           userId: userId as string,
           recipeId: recipeId,
           rating: rating,
           review: review,
-          photoUrls: [storageId],
+          photoUrls: photoUrls,
           helpfulCount: 0,
         });
-      }
+      
       onOpen(false)
-    } catch (error) {
-      console.log(error);
+      success('Success','Review added');
+    } catch (err) {
+      console.log(err);
+      error('Error','Something went wrong. Please try again.');
     }
   };
+  const { height } = useGradualAnimation();
+     
+  const fakeView = useAnimatedStyle(() => {
+         return {
+           height: Math.abs(height.value),
+         };
+    }, []);
   return (
-    <Modal visible={open} onRequestClose={() => onOpen(false)} transparent>
-      <View className="flex-1 justify-end bg-black/50">
-        <View
-          style={{ height: "50%" }}
-          className="rounded-t-3xl bg-white dark:bg-black"
-        >
-        <ScrollView showsVerticalScrollIndicator={false} >
+   <SwipeableModal
+   visible={open}
+   onClose={() => onOpen(false)}
+   height='60%'
+   showHandle
+   closeOnBackdropPress
+   >
+
+          <KeyboardAwareScrollView bottomOffset={40} showsVerticalScrollIndicator={false} >
           <View className="flex-row items-center p-4 gap-2">
             <Text className="dark:text-white " > How was it ?</Text>
             {[1, 2, 3, 4, 5].map((star) => (
@@ -111,15 +141,14 @@ const AddReview = ({ open, onOpen, recipeId }: Props) => {
             />
             <Text className="text-sm text-end dark:text-white ">{review.length}/300 </Text>
           </View>
-          
+          <Animated.View style={fakeView} />
           <TouchableOpacity onPress={handleAddreview} 
            className="bg-primary-light items-center p-4 justify-center rounded-lg mx-2"  >
             <Text> Add Review </Text>
           </TouchableOpacity>
-          </ScrollView>
-        </View>
-      </View>
-    </Modal>
+         
+          </KeyboardAwareScrollView>
+     </SwipeableModal>
   );
 };
 

@@ -7,6 +7,7 @@ import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { Stack } from "expo-router";
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import '../global.css';
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
@@ -17,12 +18,12 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }} >
   <ClerkProvider tokenCache={tokenCache} >
     <ConvexProviderWithClerk client={convex}  useAuth={useAuth}>
-     
+     <KeyboardProvider>
       <ThemeProvider>
         <ToastProvider>
       <SafeAreaProvider>
            <SafeAreaView className="flex-1" >
-          <StatusBar style="auto" />
+          <StatusBar style='light' />
           <Stack screenOptions={{headerShown:false}} >
             <Stack.Screen name='index'/>
             <Stack.Screen name="(auth)" />
@@ -32,7 +33,7 @@ export default function RootLayout() {
       </SafeAreaProvider>
       </ToastProvider>
       </ThemeProvider>
-     
+     </KeyboardProvider>
     </ConvexProviderWithClerk>
     </ClerkProvider>
    </GestureHandlerRootView>

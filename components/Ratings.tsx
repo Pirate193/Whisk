@@ -7,6 +7,7 @@ import { useMutation, useQuery } from 'convex/react'
 import React, { useState } from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import AddReview from './addReview'
+import NotFound from './ui/notFound'
 
 interface RatingProps{
   recipeId:Id<'recipes'>;
@@ -36,6 +37,7 @@ export default function Ratings({recipeId}:RatingProps) {
       keyExtractor={(item)=>item._id}
       renderItem={({item})=>(
         <View className='bg-secondary-light mx-2 p-4 rounded-lg mt-2 dark:bg-secondary-dark ' >
+          
             <View className='flex-row' >
               {[1,2,3,4,5].map((star)=>(
                 <View key={star} >
@@ -60,6 +62,7 @@ export default function Ratings({recipeId}:RatingProps) {
       )}
       ListEmptyComponent={
         <View className='flex justify-center items-center' >
+          <NotFound />
           <Text className='dark:text-white text-lg' >
             No rating added yet .. be the first 
           </Text>
